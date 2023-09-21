@@ -1,0 +1,2 @@
+ALTER TABLE "servers" ADD COLUMN "server_image" text DEFAULT 'https://images.unsplash.com/photo-1679057001914-59ab4131dfff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80';--> statement-breakpoint
+ALTER TABLE "users" ADD COLUMN "user_image" text DEFAULT 'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1856&q=80';

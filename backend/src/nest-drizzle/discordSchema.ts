@@ -1,0 +1,101 @@
+import { relations, sql } from 'drizzle-orm';
+import {
+  serial,
+  text,
+  timestamp,
+  pgTable,
+  integer,
+  varchar,
+  uuid,
+  primaryKey,
+} from 'drizzle-orm/pg-core';
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey().unique().primaryKey(),
+  uuid: uuid('user_uuid').defaultRandom(),
+  name: varchar('name', { length: 256 }).notNull(),
+  // username: varchar('username', { length: 256 }),
+  email: text('email').unique(),
+  password: text('password').notNull(),
+  image: text('user_image').default(
+    'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1856&q=80',
+  ),
+  role: text('role').$type<'admin' | 'user'>(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const servers = pgTable('servers', {
+  id: serial('id').unique().primaryKey(),
+  uuid: uuid('server_uuid').defaultRandom(),
+  name: text('server_name').notNull(),
+  image: text('server_image').default(
+    'https://images.unsplash.com/photo-1679057001914-59ab4131dfff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80',
+  ),
+  serverOwner: integer('server_owner')
+    .references(() => users.id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
+  mode: text('mode'), // Invite only, free for all
+  hidden: text('hidden').$type<'hidden' | 'seen'>(), // Invite only, free for all
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const channels = pgTable('channels', {
+  id: serial('id').unique().primaryKey(),
+  name: text('channel_name').notNull(),
+  mode: text('mode'), // limited access, free for all
+  serverId: integer('server_id').references(() => servers.id),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const usersRelations = relations(users, ({ many }) => ({
+  usersToServers: many(usersToServers),
+}));
+
+export const usersToServers = pgTable(
+  'users_to_servers',
+  {
+    userId: integer('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    serverId: integer('server_id')
+      .notNull()
+      .references(() => servers.id, { onDelete: 'cascade' }),
+  },
+  (t) => ({
+    pk: primaryKey(t.userId, t.serverId),
+  }),
+);
+
+export const serversRelations = relations(servers, ({ many }) => ({
+  usersToServers: many(usersToServers),
+}));
+
+export const usersToServerRelations = relations(usersToServers, ({ one }) => ({
+  server: one(servers, {
+    fields: [usersToServers.serverId],
+    references: [servers.id],
+  }),
+  user: one(users, {
+    fields: [usersToServers.userId],
+    references: [users.id],
+  }),
+}));
+
+export const channelsRelation = relations(channels, ({ one }) => ({
+  server: one(servers, {
+    fields: [channels.serverId],
+    references: [servers.id],
+  }),
+}));
+
+export const serverOwnerRelation = relations(servers, ({ one }) => ({
+  owner: one(users, {
+    fields: [servers.serverOwner],
+    references: [users.id],
+  }),
+}));
