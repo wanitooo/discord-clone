@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { NestDrizzleClientModule } from './nest-drizzle/client/module';
 import { ServersModule } from './servers/servers.module';
+import { ChannelsModule } from './channels/channels.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -13,6 +14,7 @@ import { ServersModule } from './servers/servers.module';
     // GlobalModule,
     NestDrizzleClientModule,
     ServersModule,
+    ChannelsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

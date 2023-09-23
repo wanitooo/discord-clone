@@ -56,8 +56,8 @@ export class ServersController {
     return this.serversService.update(uuid, updateServerDto);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.serversService.remove(+id);
-  // }
+  @Delete(':uuid')
+  remove(@Param('uuid') uuid: string) {
+    return this.serversService.remove(uuid);
+  }
 }

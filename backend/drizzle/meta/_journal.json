@@ -36,6 +36,20 @@
       "when": 1694675834025,
       "tag": "0004_curious_korvac",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1695466585314,
+      "tag": "0005_absent_the_fury",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1695467700043,
+      "tag": "0006_curvy_agent_brand",
+      "breakpoints": true
     }
   ]
 }

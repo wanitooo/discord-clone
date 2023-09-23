@@ -84,9 +84,8 @@ export class ServersService {
     // console.log('UUID', uuid);
 
     const result = this.db.transaction(async (tx) => {
-      const serversSet: Partial<
-        Record<keyof InferInsertModel<typeof servers>, any>
-      > = {};
+      const serverQuerySet: Partial<Record<keyof typeof updateServerDto, any>> =
+        {};
 
       // const upd = this.db.execute(
       //   sql`
@@ -97,8 +96,7 @@ export class ServersService {
       //   WHERE server_uuid = ${uuid}
       //   `,
       // );
-      const { name, serverOwner } = updateServerDto;
-      const keysToUpdate: (keyof typeof serversSet)[] = [
+      const keysToUpdate: (keyof typeof serverQuerySet)[] = [
         'name',
         'serverOwner',
         'updatedAt',
@@ -107,16 +105,17 @@ export class ServersService {
       ];
       const updatedDate = new Date();
 
+      // Check if the value is defined in the request, if it is, update the server query
       for (const key of keysToUpdate) {
         const value = updateServerDto[key];
         if (value !== undefined) {
-          serversSet[key] = value;
+          serverQuerySet[key] = value;
         }
       }
 
       const upd = await tx
         .update(servers)
-        .set({ ...serversSet, updatedAt: updatedDate })
+        .set({ ...serverQuerySet, updatedAt: updatedDate })
         .where(eq(servers.uuid, uuid))
         .returning({
           UUID: servers.uuid,
@@ -143,7 +142,10 @@ export class ServersService {
     return result;
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} server`;
-  // }
+  remove(uuid: string) {
+    return this.db
+      .delete(servers)
+      .where(eq(servers.uuid, uuid))
+      .returning({ deletedName: servers.name, deletedUUID: servers.uuid });
+  }
 }

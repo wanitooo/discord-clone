@@ -45,8 +45,10 @@ export const servers = pgTable('servers', {
 
 export const channels = pgTable('channels', {
   id: serial('id').unique().primaryKey(),
+  uuid: uuid('channel_uuid').defaultRandom(),
   name: text('channel_name').notNull(),
-  mode: text('mode'), // limited access, free for all
+  mode: text('mode').$type<'private' | 'public'>().default('public'),
+  type: text('type').$type<'text' | 'voice'>(),
   serverId: integer('server_id').references(() => servers.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
