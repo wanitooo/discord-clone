@@ -52,7 +52,7 @@ export class ServersService {
   }
 
   findAll() {
-    return this.db
+    const data = this.db
       .select({
         serverName: servers.name,
         serverId: servers.id,
@@ -63,6 +63,7 @@ export class ServersService {
       })
       .from(servers)
       .orderBy(asc(servers.createdAt));
+    return data;
   }
 
   findOne(id: number) {

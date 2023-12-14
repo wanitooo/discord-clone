@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { server } from "../../routes/appRoutes/serverRoutes";
 import { useEffect } from "react";
+import ServerOptionsDropdown from "../discord-ui/ServerOptionsDropdown";
 
 interface ServerSidebar {
   serverName: string;
@@ -21,7 +22,7 @@ const dummySidebarData = [
   },
 ];
 
-const ServerSidebar = () => {
+const ServerChannels = () => {
   const { serverId } = useParams({ from: "/app/server" });
   const navigate = useNavigate();
   useEffect(() => {
@@ -30,15 +31,14 @@ const ServerSidebar = () => {
     }
   }, []);
 
-  console.log("server id", serverId);
+  // console.log("server id", serverId);
 
   return (
     <div className="h-screen bg-discord-black w-[245px]">
       {serverId ? (
         <div>
-          <div className="bg-discord-blackest">
-            {dummySidebarData[parseInt(serverId)].serverName}
-          </div>
+          {/*  Drop down component here */}
+          <ServerOptionsDropdown />
           <div>
             {dummySidebarData[parseInt(serverId)].channels.map((item, idx) => (
               <div key={idx}>{item}</div>
@@ -46,10 +46,10 @@ const ServerSidebar = () => {
           </div>
         </div>
       ) : (
-        <div>"Pick a server"</div>
+        <div>"Pick a server"</div> // Should be a loading state instead
       )}
     </div>
   );
 };
 
-export default ServerSidebar;
+export default ServerChannels;

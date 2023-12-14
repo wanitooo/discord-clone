@@ -36,8 +36,14 @@ export class ServersController {
   }
 
   @Get()
-  findAll() {
-    return this.serversService.findAll();
+  async findAll() {
+    const servers = await this.serversService.findAll();
+    // console.log('typeof ', typeof servers, 'SERVERS ', servers);
+    // return {
+    //   message: 'Found servers!',
+    //   serversFound: servers,
+    // };
+    return servers;
   }
 
   @Get(':id')

@@ -2,7 +2,8 @@ import SidebarIcon from "../discord-ui/Sidebar/SidebarIcon";
 import { ScrollArea, Separator } from "../shadcn/ui";
 import ThemeToggle from "../discord-ui/ThemeToggle";
 import { Link } from "@tanstack/react-router";
-
+import { useEffect } from "react";
+import axios from "axios";
 const dummySidebarData = [
   {
     serverName: "Server 1",
@@ -17,6 +18,25 @@ const dummySidebarData = [
 ];
 
 const Sidebar = () => {
+  useEffect(() => {
+    fetchServers();
+  }, []);
+  const fetchServers = async () => {
+    const data = await fetch("http://127.0.0.1:3000/api/servers", {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .catch((res) => console.log("Something went wrong ", res));
+
+    // const data = axios
+    //   .get("localhost:3000/api/servers")
+    //   .then((res) => console.log(res));
+    console.log("data ", data);
+  };
   return (
     <>
       <div className="h-screen w-[72px] bg-discord-blackest flex flex-col items-center gap-2 ">
