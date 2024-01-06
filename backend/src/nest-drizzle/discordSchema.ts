@@ -43,6 +43,8 @@ export const servers = pgTable('servers', {
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
+// TODO: Add category table and channel_category relations
+// Add messages table, add channel_messages relations
 export const channels = pgTable('channels', {
   id: serial('id').unique().primaryKey(),
   uuid: uuid('channel_uuid').defaultRandom(),

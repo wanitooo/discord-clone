@@ -30,7 +30,7 @@ export class ZodTransformPipe implements PipeTransform {
     //   if (!name) {
     //     throw new BadRequestException('Name to string failed');
     //   }
-    //   return { serverName: transformed, };
+    //   return { serverName: transformed, };`
     // }
   }
 }

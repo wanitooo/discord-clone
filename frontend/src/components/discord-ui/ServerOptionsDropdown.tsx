@@ -24,15 +24,15 @@ const ServerOptionsDropdown = () => {
   return (
     <DropdownMenu>
       {/* Shoudld have an arrow and an x when clicked */}
-      <DropdownMenuTrigger className="w-full flex focus:outline-none" asChild>
+      <DropdownMenuTrigger className="w-full flex outline-none" asChild>
         <Button
           className="
-        rounded-none 
-        bg-discord-black  
-        w-full flex-items-center justify-between
-        hover:bg-discord-gray/70
-        font-normal
-        transition-all
+          rounded-none 
+          bg-discord-black  
+          w-full flex-items-center justify-between
+          hover:bg-discord-gray/70
+          font-normal
+          transition-all
         "
         >
           Server Options
