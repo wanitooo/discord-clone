@@ -29,7 +29,8 @@ const ServerOptionsDropdown = () => {
           className="
           rounded-none 
           bg-discord-black  
-          w-full flex-items-center justify-between
+          w-full h-12 flex-items-center justify-between
+          border-b-2 border-discord-black
           hover:bg-discord-gray/70
           font-normal
           transition-all

@@ -37,12 +37,12 @@ body :root {
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --discord-blackest: 225 6% 12%;
+    --discord-blackest: 225 6% 13%;
     /* --discord-blackest:  #1e1f22 */
-    --discord-black: 228 5% 21%;
-    /* --discord-black: #3b3c40; */
-    --discord-gray: 233 4% 27%;
-    /* --discord-gray: #4f5057; */
+    --discord-black: 220 7% 18%;
+    /* --discord-black: #2b2d31; */
+    --discord-gray: 233 7% 21%;
+    /* --discord-gray: #313338; */
 
     --radius: 0.5rem;
   }
