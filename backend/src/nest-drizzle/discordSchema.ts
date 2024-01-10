@@ -8,6 +8,7 @@ import {
   varchar,
   uuid,
   primaryKey,
+  boolean,
 } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
@@ -43,20 +44,37 @@ export const servers = pgTable('servers', {
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-// TODO: Add category table and channel_category relations
 // Add messages table, add channel_messages relations
 export const channels = pgTable('channels', {
   id: serial('id').unique().primaryKey(),
   uuid: uuid('channel_uuid').defaultRandom(),
   name: text('channel_name').notNull(),
   mode: text('mode').$type<'private' | 'public'>().default('public'),
-  type: text('type').$type<'text' | 'voice'>(),
+  type: text('type').$type<'text' | 'voice' | 'server' | 'bot'>(),
   serverId: integer('server_id').references(() => servers.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
+// Reactions can be a table if with custom reactions
+export const messages = pgTable('messages', {
+  id: serial('id').unique().primaryKey(),
+  uuid: uuid('message_uuid').defaultRandom(),
+  chat: text('chat').notNull().default(''),
+  edited: boolean('edited').default(false),
+  userId: integer('userId').references(() => users.id, {
+    onDelete: 'cascade',
+  }),
+  channelId: integer('channel_id').references(() => channels.id, {
+    onDelete: 'cascade',
+  }),
+  // Most likely wrong
+  reaction: text('reaction').array().array(), // Could just be a UNICODE of all the available reactions
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const usersToServersRelation = relations(users, ({ many }) => ({
   usersToServers: many(usersToServers),
 }));
 
@@ -75,11 +93,11 @@ export const usersToServers = pgTable(
   }),
 );
 
-export const serversRelations = relations(servers, ({ many }) => ({
+export const serversToUsersRelation = relations(servers, ({ many }) => ({
   usersToServers: many(usersToServers),
 }));
 
-export const usersToServerRelations = relations(usersToServers, ({ one }) => ({
+export const usersToServerRelation = relations(usersToServers, ({ one }) => ({
   server: one(servers, {
     fields: [usersToServers.serverId],
     references: [servers.id],
@@ -90,7 +108,7 @@ export const usersToServerRelations = relations(usersToServers, ({ one }) => ({
   }),
 }));
 
-export const channelsRelation = relations(channels, ({ one }) => ({
+export const channelToServerRelation = relations(channels, ({ one }) => ({
   server: one(servers, {
     fields: [channels.serverId],
     references: [servers.id],
@@ -101,5 +119,27 @@ export const serverOwnerRelation = relations(servers, ({ one }) => ({
   owner: one(users, {
     fields: [servers.serverOwner],
     references: [users.id],
+  }),
+}));
+
+// export const userMessagesRelation = relations(users, ({ many }) => ({
+//   messages: many(messages),
+// }));
+
+// export const channelMessagesRelation = relations(channels, ({ many }) => ({
+//   messages: many(messages),
+// }));
+
+export const messagesUserRelation = relations(messages, ({ one }) => ({
+  user: one(users, {
+    fields: [messages.userId],
+    references: [users.id],
+  }),
+}));
+
+export const messageToChannelRelation = relations(messages, ({ one }) => ({
+  channel: one(channels, {
+    fields: [messages.channelId],
+    references: [channels.id],
   }),
 }));

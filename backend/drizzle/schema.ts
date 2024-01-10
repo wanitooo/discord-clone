@@ -1,4 +1,4 @@
-import { pgTable, foreignKey, serial, uuid, text, integer, timestamp, unique, varchar, primaryKey } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, serial, uuid, text, integer, timestamp, unique, varchar, boolean, primaryKey } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
 
@@ -13,15 +13,6 @@ export const servers = pgTable("servers", {
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
 	serverImage: text("server_image").default('https://images.unsplash.com/photo-1679057001914-59ab4131dfff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80'),
 	hidden: text("hidden"),
-});
-
-export const channels = pgTable("channels", {
-	id: serial("id").primaryKey().notNull(),
-	channelName: text("channel_name").notNull(),
-	mode: text("mode"),
-	serverId: integer("server_id").references(() => servers.id),
-	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
-	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
 });
 
 export const users = pgTable("users", {
@@ -39,6 +30,29 @@ export const users = pgTable("users", {
 	return {
 		usersEmailUnique: unique("users_email_unique").on(table.email),
 	}
+});
+
+export const channels = pgTable("channels", {
+	id: serial("id").primaryKey().notNull(),
+	channelName: text("channel_name").notNull(),
+	mode: text("mode").default('public'),
+	serverId: integer("server_id").references(() => servers.id),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+	channelUuid: uuid("channel_uuid").defaultRandom(),
+	type: text("type"),
+});
+
+export const messages = pgTable("messages", {
+	id: serial("id").primaryKey().notNull(),
+	messageUuid: uuid("message_uuid").defaultRandom(),
+	chat: text("chat").default('').notNull(),
+	edited: boolean("edited").default(false),
+	userId: integer("userId").references(() => users.id, { onDelete: "cascade" } ),
+	channelId: integer("channel_id").references(() => channels.id, { onDelete: "cascade" } ),
+	reaction: text("reaction").array().array(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
 });
 
 export const usersToServers = pgTable("users_to_servers", {
