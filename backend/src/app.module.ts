@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { NestDrizzleClientModule } from './nest-drizzle/client/module';
 import { ServersModule } from './servers/servers.module';
 import { ChannelsModule } from './channels/channels.module';
+import { ChatsModule } from './chats/chats.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,6 +16,7 @@ import { ChannelsModule } from './channels/channels.module';
     NestDrizzleClientModule,
     ServersModule,
     ChannelsModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
