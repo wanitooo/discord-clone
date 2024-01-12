@@ -17,8 +17,8 @@ export const insertChannelSchema = createInsertSchema(channels, {
   serverId: z.number({
     required_error: 'Int reference to server id is required.',
   }),
-  type: z.enum(['text', 'voice'], {
-    invalid_type_error: 'Type can only be  `text` or `voice`',
+  type: z.enum(['text', 'voice', 'server', 'bot'], {
+    invalid_type_error: 'Type can only be  `text`, `voice`, `server`, or `bot`',
   }),
 }).required({
   name: true,

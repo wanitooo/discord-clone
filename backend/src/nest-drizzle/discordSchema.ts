@@ -62,7 +62,7 @@ export const messages = pgTable('messages', {
   uuid: uuid('message_uuid').defaultRandom(),
   chat: text('chat').notNull().default(''),
   edited: boolean('edited').default(false),
-  userId: integer('userId').references(() => users.id, {
+  userId: integer('user_id').references(() => users.id, {
     onDelete: 'cascade',
   }),
   channelId: integer('channel_id').references(() => channels.id, {

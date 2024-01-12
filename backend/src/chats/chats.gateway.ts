@@ -9,7 +9,8 @@ import {
 } from '@nestjs/websockets';
 import { ChatsService } from './chats.service';
 import { Server, Socket } from 'socket.io';
-import { string } from 'zod';
+import { createMessageSchema } from './dto/chat-dto';
+import { ZodPipe } from 'src/pipes/zod-pipe';
 type MessageDto = {
   userId: string;
   message: string;
@@ -26,12 +27,12 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('message')
   handleMessage(
-    @MessageBody() data: string,
+    @MessageBody(new ZodPipe(createMessageSchema)) chat,
     @ConnectedSocket() client: Socket,
   ) {
-    // Handle received message
-    const user: MessageDto = JSON.parse(data);
-    console.log(data);
-    this.server.emit('message', `user ${user.userId}: ${user.message}`); // Broadcast the message to all connected clients
+    // console.log('client connected ', client);
+    //  TODO: socket rooms map to channels =>
+    const res = this.chatsService.create(chat);
+    this.server.emit('receive_message', `res: ${res} `); // Broadcast the message to all connected clients
   }
 }

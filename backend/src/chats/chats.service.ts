@@ -1,11 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
-
+import { Inject, Injectable } from '@nestjs/common';
+import { CreateMessageDto, UpdateMessageDto } from './dto/chat-dto';
+import { DRIZZLE_ORM } from 'src/nest-drizzle/constants';
+import { PostgresJsDb } from 'src/nest-drizzle';
+import { messages } from 'src/nest-drizzle/discordSchema';
 @Injectable()
 export class ChatsService {
-  create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+  constructor(@Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb) {}
+  create(message: CreateMessageDto) {
+    console.log('chat ', message);
+    const { userId, channelId, chat } = message;
+    const result = this.db.transaction(async (tx) => {
+      return await tx
+        .insert(messages)
+        .values({
+          userId,
+          channelId,
+          chat,
+        })
+        .returning({
+          insertedId: messages.id,
+          insertedUserId: messages.userId,
+          insertedChannelId: messages.channelId,
+          insertedChat: messages.chat,
+        });
+    });
+    return result;
   }
 
   findAll() {
@@ -16,7 +35,7 @@ export class ChatsService {
     return `This action returns a #${id} chat`;
   }
 
-  update(id: number, updateChatDto: UpdateChatDto) {
+  update(id: number, updateChatDto: UpdateMessageDto) {
     return `This action updates a #${id} chat`;
   }
 
