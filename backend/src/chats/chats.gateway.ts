@@ -9,7 +9,12 @@ import {
 } from '@nestjs/websockets';
 import { ChatsService } from './chats.service';
 import { Server, Socket } from 'socket.io';
-import { createMessageSchema } from './dto/chat-dto';
+import {
+  CreateMessageDto,
+  GetMessagesDto,
+  createMessageSchema,
+  getMessagesSchema,
+} from './dto/chat-dto';
 import { ZodPipe } from 'src/pipes/zod-pipe';
 type MessageDto = {
   userId: string;
@@ -25,14 +30,24 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: any) {}
 
-  @SubscribeMessage('message')
+  @SubscribeMessage('send_message') // Subscribe to server_id?
   handleMessage(
-    @MessageBody(new ZodPipe(createMessageSchema)) chat,
+    @MessageBody(new ZodPipe(createMessageSchema)) chat: CreateMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
     // console.log('client connected ', client);
-    //  TODO: socket rooms map to channels =>
-    const res = this.chatsService.create(chat);
-    this.server.emit('receive_message', `res: ${res} `); // Broadcast the message to all connected clients
+    this.chatsService.create(chat);
+    this.server.emit('update_channelId', 'new chat was created should update');
+  }
+
+  @SubscribeMessage('get_messages') // Subscribe to server_id?
+  async handleGetMessages(
+    @MessageBody() getMessage: GetMessagesDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    // console.log('client connected ', client);
+    const messages = await this.chatsService.findAll(getMessage);
+    console.log('messages: ', messages);
+    this.server.emit(`receive_messages`, { messages });
   }
 }

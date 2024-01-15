@@ -1,4 +1,4 @@
-import { createInsertSchema } from 'drizzle-zod';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { messages } from 'src/nest-drizzle/discordSchema';
 import { z } from 'zod';
 
@@ -29,7 +29,19 @@ export const updateMessageSchema = createInsertSchema(messages, {
   chat: z.string(),
 });
 
+export const getMessagesSchema = createSelectSchema(messages, {
+  userId: z.number({
+    required_error: 'User id is required',
+  }),
+  channelId: z.number({
+    required_error: 'Channel id is required',
+  }),
+}).required({
+  userId: true,
+  channelId: true,
+});
 // TODO: Delete chat schema
 
 export type CreateMessageDto = z.infer<typeof createMessageSchema>;
+export type GetMessagesDto = z.infer<typeof getMessagesSchema>;
 export type UpdateMessageDto = typeof updateMessageSchema;
