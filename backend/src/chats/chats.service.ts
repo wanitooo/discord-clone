@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import {
   CreateMessageDto,
   GetMessagesDto,
@@ -11,10 +11,10 @@ import { eq, lt, gte, ne } from 'drizzle-orm';
 @Injectable()
 export class ChatsService {
   constructor(@Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb) {}
-  create(message: CreateMessageDto) {
+  async create(message: CreateMessageDto) {
     console.log('chat ', message);
     const { userId, channelId, chat } = message;
-    const result = this.db.transaction(async (tx) => {
+    const result = await this.db.transaction(async (tx) => {
       return await tx
         .insert(messages)
         .values({
