@@ -10,8 +10,8 @@ interface SidebarProps extends SidebarTooltipProps {
 const SidebarIcon = ({
   type = "server",
   align = "center",
-  label = "No tooltip",
   side = "right",
+  label,
 }: SidebarProps) => {
   const { onOpen } = useModal();
 

@@ -2,8 +2,8 @@ import SidebarIcon from "../discord-ui/Sidebar/SidebarIcon";
 import { ScrollArea, Separator } from "../shadcn/ui";
 import ThemeToggle from "../discord-ui/ThemeToggle";
 import { Link } from "@tanstack/react-router";
-import { useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 const dummySidebarData = [
   {
     serverName: "Server 1",
@@ -17,26 +17,51 @@ const dummySidebarData = [
   },
 ];
 
-const Sidebar = () => {
-  useEffect(() => {
-    fetchServers();
-  }, []);
-  const fetchServers = async () => {
-    const data = await fetch("http://127.0.0.1:3000/api/servers", {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .catch((res) => console.log("Something went wrong ", res));
+const fetchServers = async () => {
+  return await fetch("http://127.0.0.1:3000/api/servers", {
+    method: "GET",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
 
-    // const data = axios
-    //   .get("localhost:3000/api/servers")
-    //   .then((res) => console.log(res));
-    console.log("data ", data);
-  };
+  // const data = axios
+  //   .get("localhost:3000/api/servers")
+  //   .then((res) => console.log(res));
+  // console.log("data ", data);
+};
+
+const Sidebar = () => {
+  const [servers, setServers] = useState([]);
+  const serversQuery = useQuery({
+    queryKey: ["servers"],
+    queryFn: async () => {
+      return await fetchServers();
+    },
+  });
+  // TODO: Add types to fetched data, could use zod types shit
+  console.log("SERVERS: ", serversQuery.data);
+
+  // Conditionally perform actions based on serversQuery.isFetched
+  useEffect(() => {
+    if (serversQuery.isFetched) {
+      setServers(serversQuery.data);
+    }
+  }, [serversQuery.isFetched, serversQuery.data]);
+
+  if (serversQuery.isLoading) {
+    console.log("Loading data...");
+    return <h1 className="text-black">LOADING...</h1>;
+  }
+
+  if (serversQuery.isError) {
+    console.log("Error loading data...", serversQuery.error);
+  }
+
+  // Always call useEffect unconditionally
   return (
     <>
       <div className="h-screen w-[72px] bg-discord-blackest flex flex-col items-center gap-2 ">
@@ -48,18 +73,26 @@ const Sidebar = () => {
         />
         <Separator className="bg-discord-gray w-1/2 mx-auto" />
         <ScrollArea className="flex-1 w-full ">
-          <Link to="/app/server/$serverId" params={{ serverId: "0" }}>
+          {servers.map((server) => (
+            <Link
+              to={`/app/server/${server.serverId}`}
+              params={{ serverId: "0" }}
+            >
+              <SidebarIcon label={`${server.serverName}`} />
+            </Link>
+          ))}
+
+          {/* {JSON.stringify(serversQuery.data)} */}
+          {/* <Link to="/app/server/$serverId" params={{ serverId: "0" }}>
             <SidebarIcon />
           </Link>
           <Link to="/app/server/$serverId" params={{ serverId: "1" }}>
             <SidebarIcon />
-          </Link>
+          </Link> */}
           {/* <SidebarIcon 
               img={}
               tooltip={server.name}
           /> */}
-          <SidebarIcon />
-          <SidebarIcon />
         </ScrollArea>
         <ThemeToggle></ThemeToggle>
       </div>

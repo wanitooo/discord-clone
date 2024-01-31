@@ -1,7 +1,6 @@
 import { Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import Sidebar from "../components/layouts/Sidebar";
 import { useEffect } from "react";
-import ServerOptionsDropdown from "../components/discord-ui/ServerOptionsDropdown";
 import ChatBox from "../components/discord-ui/ChatBox";
 import ChatInput from "../components/discord-ui/ChatInput";
 const App = () => {

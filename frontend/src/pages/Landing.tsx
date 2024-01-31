@@ -3,6 +3,7 @@ import { Button } from "../components/shadcn/ui";
 import { Separator } from "@radix-ui/react-menubar";
 
 const Landing = () => {
+  // TODO: Make a landing page explaining the project.
   return (
     <div>
       <span>Welcome to the landing page</span>
