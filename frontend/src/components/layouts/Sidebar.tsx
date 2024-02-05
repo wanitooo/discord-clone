@@ -4,18 +4,6 @@ import ThemeToggle from "../discord-ui/ThemeToggle";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-const dummySidebarData = [
-  {
-    serverName: "Server 1",
-    serverOwner: "Server 1 owner",
-    channels: ["Channel Orange", "Chanel", "Blonded"],
-  },
-  {
-    serverName: "Server 2",
-    serverOwner: "Server 2 owner",
-    channels: ["505", "Sweetdreams TN", "Miracle Aligner"],
-  },
-];
 
 const fetchServers = async () => {
   return await fetch("http://127.0.0.1:3000/api/servers", {

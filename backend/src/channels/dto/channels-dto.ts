@@ -14,7 +14,7 @@ export const insertChannelSchema = createInsertSchema(channels, {
     .string()
     .min(1, { message: 'Must be more than 1 character' })
     .max(64, { message: 'Must be less than 64 characters' }),
-  serverId: z.number({
+  serverId: z.coerce.number({
     required_error: 'Int reference to server id is required.',
   }),
   type: z.enum(['text', 'voice', 'server', 'bot'], {

@@ -11,7 +11,7 @@ const SidebarIcon = ({
   type = "server",
   align = "center",
   side = "right",
-  label,
+  label = "server",
 }: SidebarProps) => {
   const { onOpen } = useModal();
 

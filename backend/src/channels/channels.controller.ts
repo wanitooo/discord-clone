@@ -6,17 +6,33 @@ import {
   Patch,
   Param,
   Delete,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ChannelsService } from './channels.service';
-import { CreateChannelDto } from './dto/channels-dto';
+import { CreateChannelDto, insertChannelSchema } from './dto/channels-dto';
+import { ZodPipe } from 'src/pipes/zod-pipe';
 
 @Controller('channels')
 export class ChannelsController {
   constructor(private readonly channelsService: ChannelsService) {}
 
+  // TODO: add Zod validation to other routes
   @Post()
-  create(@Body() createChannelDto: CreateChannelDto) {
-    return this.channelsService.create(createChannelDto);
+  async create(
+    @Body(new ZodPipe(insertChannelSchema)) channel: CreateChannelDto,
+  ) {
+    try {
+      var result: any = await this.channelsService.create(channel);
+    } catch (error) {
+      // console.log(error);
+      throw new HttpException(
+        'Failed to create channel',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return result;
   }
 
   @Get('/all')
