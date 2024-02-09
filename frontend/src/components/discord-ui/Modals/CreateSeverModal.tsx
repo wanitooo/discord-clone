@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
+import { useQuery } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -17,12 +17,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  Input,
+  Button,
 } from "../../shadcn/ui";
 
-import { Input } from "../../shadcn/ui";
-import { Button } from "../../shadcn/ui";
+import UploadAddServerIcon from "../UploadAddServerIcon";
 // import { FileUpload } from "@/components/file-upload";
 import { useModal } from "../../../hooks/global-store";
+import { ChangeEvent, useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -33,9 +35,52 @@ const formSchema = z.object({
   }),
 });
 
+const uploadServerImage = async (imageFile: any) => {
+  // const fileBlob = await fetch(image).then((r) => r.blob());
+  const form = new FormData();
+  // console.log("fileblob ", fileBlob);
+  form.append("file", imageFile);
+  const data = await fetch(`http://127.0.0.1:3000/api/files/upload`, {
+    method: "POST",
+    mode: "cors",
+    // headers: {
+    //   "Content-Type": "multipart/form-data",
+    // },
+    body: form,
+  })
+    .then((res) => res.json())
+    .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
+
+  // const data = axios
+  //   .get("localhost:3000/api/servers")
+  //   .then((res) => console.log(res));
+  console.log("data ", data);
+
+  return data;
+};
+
 export const CreateServerModal = () => {
   const { isOpen, onClose, type } = useModal();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const uploadQuery = useQuery({
+    queryKey: ["uploadServerImage", imageFile],
+    queryFn: async () => {
+      return await uploadServerImage(imageFile);
+    },
+    enabled: false,
+  });
+  const onImageChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files !== null && input.files.length) {
+      const file = input.files[0];
+      setImageFile(file);
+      const url = URL.createObjectURL(file);
+      setImagePreview(url);
+    }
+  };
   const isModalOpen = isOpen && type === "createServer";
 
   const form = useForm({
@@ -51,10 +96,11 @@ export const CreateServerModal = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       //   await axios.post("/api/servers", values);
-
+      console.log("triggered submit");
+      await uploadQuery.refetch();
       form.reset();
       //   router.refresh();
-      onClose();
+      // onClose();
     } catch (error) {
       console.log(error);
     }
@@ -84,7 +130,11 @@ export const CreateServerModal = () => {
           >
             <div className="space-y-8 px-6 ">
               <div className="flex items-center justify-center text-center">
-                TODO : Image upload , with S3 or uploadthing?
+                {/* TODO: Figure out how to include this component to the form field */}
+                <UploadAddServerIcon
+                  image={imagePreview}
+                  onImageChange={onImageChange}
+                />
               </div>
 
               <FormField
@@ -110,7 +160,10 @@ export const CreateServerModal = () => {
             </div>
 
             <DialogFooter className="bg-gray-100 px-6 py-4">
-              <Button disabled={isLoading}>Create</Button>
+              {/* this is hack, onClick should not be needed in this form submit */}
+              <Button disabled={isLoading} onClick={onSubmit}>
+                Create
+              </Button>
             </DialogFooter>
           </form>
         </Form>
