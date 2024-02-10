@@ -1,7 +1,19 @@
 import { Bars2Icon } from "@heroicons/react/24/solid";
 import { ScrollArea } from "../shadcn/ui/ScrollArea";
+import { useEffect, useState } from "react";
+import { createPresignedUrlWithClient } from "../../s3";
 
 const ChatBox = () => {
+  const [image, setImage] = useState("");
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      const res = await createPresignedUrlWithClient();
+      console.log(res);
+      setImage(res);
+    };
+
+    fetchImageUrl();
+  }, []);
   return (
     <>
       <div className="w-full h-12 flex flex-row justify-between px-4 py-2 shadow border-b-2 border-b-discord-gray ">
@@ -17,6 +29,8 @@ const ChatBox = () => {
           corrupti ratione aspernatur ad, architecto beatae modi sint dolorum
           ab, tempora praesentium natus ullam repellat! Tempore, nihil
           consequatur! Aliquid tenetur quam dicta nulla?
+          {/* {JSON.stringify(image)} */}
+          <img src={image} alt="aws image" />
         </div>
       </ScrollArea>
     </>
