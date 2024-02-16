@@ -7,7 +7,7 @@ const ChatBox = () => {
   const [image, setImage] = useState("");
   useEffect(() => {
     const fetchImageUrl = async () => {
-      const res = await createPresignedUrlWithClient();
+      const res = await createPresignedUrlWithClient(null);
       console.log(res);
       setImage(res);
     };

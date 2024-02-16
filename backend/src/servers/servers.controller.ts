@@ -10,6 +10,11 @@ import {
   ParseIntPipe,
   ValidationPipe,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { ServersService } from './servers.service';
 import {
@@ -19,20 +24,44 @@ import {
   updateServerSchema,
 } from './dto/servers-dto';
 // import { UpdateServerDto } from './dto/update-server.dto';
-import { ZodTransformPipe, ZodValidationPipe } from 'src/pipes/zod-pipe';
+import {
+  ZodPipe,
+  // ZodTransformPipe,
+  // ZodValidationPipe,
+} from 'src/pipes/zod-pipe';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { fileURLToPath } from 'url';
 
 @Controller('servers')
 export class ServersController {
   constructor(private readonly serversService: ServersService) {}
 
   @Post()
-  @UsePipes(
-    new ZodTransformPipe({ serverOwner: true }),
-    new ZodValidationPipe(insertServerSchema),
-  )
-  create(@Body() createServerDto: CreateServerDto) {
+  // @UsePipes(
+  //   // new ZodTransformPipe({ serverOwner: true }),
+  //   new ZodValidationPipe(insertServerSchema),
+  // )
+  @UseInterceptors(FileInterceptor('file'))
+  create(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 10 * 1024 * 1024, // 10 megabytes
+          }),
+          new FileTypeValidator({
+            fileType: '.(png|jpeg|jpg)',
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Body(new ZodPipe(insertServerSchema)) serverParams: CreateServerDto,
+  ) {
     // console.log(createServerDto);
-    return this.serversService.create(createServerDto);
+    console.log('server ', serverParams);
+    console.log('file ', file);
+    return this.serversService.create(file, serverParams);
   }
 
   @Get()

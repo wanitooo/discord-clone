@@ -25,5 +25,6 @@ import { ConfigService } from '@nestjs/config';
       useClass: ThrottlerGuard,
     },
   ],
+  exports: [UploadService],
 })
 export class UploadModule {}

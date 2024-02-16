@@ -14,7 +14,7 @@ export const insertServerSchema = createInsertSchema(servers, {
     .string()
     .min(3, { message: 'Must be more than 3 characters' })
     .max(128, { message: 'Must be less than 128 characters' }),
-  serverOwner: z.number({
+  serverOwner: z.coerce.number({
     required_error: 'Int reference to server owner is required.',
   }),
 }).required({

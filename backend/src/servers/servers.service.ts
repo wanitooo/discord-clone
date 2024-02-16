@@ -10,13 +10,30 @@ import { servers, usersToServers } from 'src/nest-drizzle/discordSchema';
 import { InferInsertModel, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { PgColumn, PgDate, PgUUID, date } from 'drizzle-orm/pg-core';
 import { isUndefined } from 'src/utils';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class ServersService {
-  constructor(@Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb) {}
+  constructor(
+    @Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb,
+    private uploadService: UploadService,
+  ) {}
 
-  create(createServerDto: CreateServerDto) {
-    const { name, serverOwner } = createServerDto;
+  async create(file: Express.Multer.File, serverParams: CreateServerDto) {
+    const s3Response = await this.uploadService.upload(
+      file.originalname,
+      file.buffer,
+    );
+
+    if (s3Response.$metadata.httpStatusCode == 200) {
+      var uploadUrl = s3Response.url;
+      console.log('Successfully uploaded file', uploadUrl);
+    }
+    // else {
+    // return { msg: 'Could not upload file to S3', error: s3Response };
+    // }
+
+    const { name, serverOwner } = serverParams;
 
     const result = this.db.transaction(async (tx) => {
       const ins = await tx
@@ -24,11 +41,13 @@ export class ServersService {
         .values({
           name,
           serverOwner,
+          image: uploadUrl,
         })
         .returning({
           insertedId: servers.id,
           insertedName: servers.name,
           insertedOwner: servers.serverOwner,
+          insertedImageUrl: servers.image,
         });
       // console.log('ins', ins);
       // If ins not null tx.rollback()
@@ -41,9 +60,11 @@ export class ServersService {
           serverId: usersToServers.serverId,
         });
 
+      // TODO: Should look for better ways to do this
       return {
         serverName: ins[0].insertedName,
         serverOwner: ins[0].insertedOwner,
+        serverImage: ins[0].insertedImageUrl,
         inserted: ins ? true : false,
         junctionConnected: junc ? true : false,
       };

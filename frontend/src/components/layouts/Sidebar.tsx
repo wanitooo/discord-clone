@@ -66,7 +66,11 @@ const Sidebar = () => {
               to={`/app/server/${server.serverId}`}
               params={{ serverId: "0" }}
             >
-              <SidebarIcon label={`${server.serverName}`} />
+              <SidebarIcon
+                label={`${server.serverName}`}
+                name={`${server.serverName}`}
+                imageUrl={`${server.serverImage}`}
+              />
             </Link>
           ))}
 

@@ -1,19 +1,38 @@
+import { useEffect, useState } from "react";
 import { useModal } from "../../../hooks/global-store";
 import { cn } from "../../shadcn/utils/utils";
 import SidebarTooltip, { SidebarTooltipProps } from "./SidebarTooltip";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { createPresignedUrlWithClient } from "../../../s3";
 interface SidebarProps extends SidebarTooltipProps {
   type?: "server" | "action";
+  name: string;
+  imageUrl: string;
 }
 
 // This component can either be action icon (e.g add a server) or actual servers icon
+// TODO: Change default image setting in db
 const SidebarIcon = ({
   type = "server",
   align = "center",
   side = "right",
   label = "server",
+  name,
+  imageUrl,
 }: SidebarProps) => {
   const { onOpen } = useModal();
+
+  const [image, setImage] = useState("");
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      const res = await createPresignedUrlWithClient(imageUrl);
+      console.log(res);
+      setImage(res);
+    };
+
+    fetchImageUrl();
+  }, []);
+  console.log(`Server: ${name}, url:${image}`);
 
   return (
     <SidebarTooltip align={align} label={label} side={side}>
@@ -34,7 +53,7 @@ const SidebarIcon = ({
             }
           >
             <img
-              src="https://images.unsplash.com/photo-1576158114131-f211996e9137?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=500"
+              src={image}
               alt="server image"
               style={{
                 objectFit: "fill",

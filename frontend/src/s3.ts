@@ -1,7 +1,6 @@
-import { S3Client } from "@aws-sdk/client-s3";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import s3ParseUrl from "s3-url-parser";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import s3ParseUrl from "s3-url-parser";
 
 export const s3Client = new S3Client({
   region: import.meta.env.VITE_AWS_S3_REGION,
@@ -11,8 +10,10 @@ export const s3Client = new S3Client({
   },
 });
 
-export const createPresignedUrlWithClient = async () => {
-  const uri = `https://wanitooo-discord-clone.s3.ap-southeast-1.amazonaws.com/aws-test-img.png`;
+export const createPresignedUrlWithClient = async (dbUri: string) => {
+  const uri =
+    dbUri ||
+    `https://wanitooo-discord-clone.s3.ap-southeast-1.amazonaws.com/aws-test-img.png`;
 
   const { bucket, _, key } = s3ParseUrl(uri);
 
