@@ -35,12 +35,42 @@ const formSchema = z.object({
   }),
 });
 
-const uploadServerImage = async (imageFile: any) => {
+// const uploadServerImage = async (imageFile: any) => {
+//   // const fileBlob = await fetch(image).then((r) => r.blob());
+//   const form = new FormData();
+//   // console.log("fileblob ", fileBlob);
+//   form.append("file", imageFile);
+//   const data = await fetch(`http://127.0.0.1:3000/api/files/upload`, {
+//     method: "POST",
+//     mode: "cors",
+//     // headers: {
+//     //   "Content-Type": "multipart/form-data",
+//     // },
+//     body: form,
+//   })
+//     .then((res) => res.json())
+//     .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
+
+//   // const data = axios
+//   //   .get("localhost:3000/api/servers")
+//   //   .then((res) => console.log(res));
+//   console.log("data ", data);
+
+//   return data;
+// };
+
+const createServer = async (
+  name: string,
+  serverOwner: string,
+  imageFile: any
+) => {
   // const fileBlob = await fetch(image).then((r) => r.blob());
   const form = new FormData();
   // console.log("fileblob ", fileBlob);
   form.append("file", imageFile);
-  const data = await fetch(`http://127.0.0.1:3000/api/files/upload`, {
+  form.append("name", name);
+  form.append("serverOwner", "1"); // should be taken form a cookie that contains the user
+  const data = await fetch(`http://127.0.0.1:3000/api/servers`, {
     method: "POST",
     mode: "cors",
     // headers: {
@@ -58,16 +88,18 @@ const uploadServerImage = async (imageFile: any) => {
 
   return data;
 };
-
 export const CreateServerModal = () => {
   const { isOpen, onClose, type } = useModal();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const [name, setName] = useState<string>("");
+  const [serverOwner, setServerOwner] = useState<string | null>(null);
+
   const uploadQuery = useQuery({
     queryKey: ["uploadServerImage", imageFile],
     queryFn: async () => {
-      return await uploadServerImage(imageFile);
+      return await createServer(name, serverOwner, imageFile);
     },
     enabled: false,
   });
@@ -151,6 +183,8 @@ export const CreateServerModal = () => {
                         className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
                         placeholder="Enter your server name"
                         {...field}
+                        onChange={(e) => setName(e.target.value)}
+                        value={name}
                       />
                     </FormControl>
                     <FormMessage />

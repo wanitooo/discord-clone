@@ -5,6 +5,9 @@ import {
   PutObjectCommand,
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
+
+import { v4 as uuidv4 } from 'uuid';
+
 @Injectable()
 export class UploadService {
   constructor(private readonly configService: ConfigService) {}
@@ -13,12 +16,12 @@ export class UploadService {
     region: this.configService.getOrThrow('AWS_S3_REGION'),
   });
   async upload(fileName: string, file: Buffer) {
-    const urlFileName = fileName.split(' ').join('+');
+    const urlFileName = uuidv4(); // spaces and special characters cause problems in the getPresignedUrl func in s3.ts
     try {
       var response = await this.s3Client.send(
         new PutObjectCommand({
           Bucket: this.configService.getOrThrow('AWS_BUCKET_NAME'),
-          Key: fileName,
+          Key: urlFileName,
           Body: file,
         }),
       );
