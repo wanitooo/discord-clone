@@ -31,7 +31,7 @@ const Sidebar = () => {
     },
   });
   // TODO: Add types to fetched data, could use zod types shit
-  console.log("SERVERS: ", serversQuery.data);
+  // console.log("SERVERS: ", serversQuery.data);
 
   // Conditionally perform actions based on serversQuery.isFetched
   useEffect(() => {

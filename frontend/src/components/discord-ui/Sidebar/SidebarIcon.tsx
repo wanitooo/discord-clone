@@ -32,7 +32,7 @@ const SidebarIcon = ({
 
     fetchImageUrl();
   }, []);
-  console.log(`Server: ${name}, url:${image}`);
+  // console.log(`Server: ${name}, url:${image}`);
 
   return (
     <SidebarTooltip align={align} label={label} side={side}>

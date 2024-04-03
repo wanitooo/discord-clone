@@ -1,11 +1,22 @@
 import { ChangeEvent } from "react";
+import { ControllerRenderProps, UseFormRegisterReturn } from "react-hook-form";
 
 const UploadAddServerIcon = ({
   image,
   onImageChange,
+  fileRef,
+  field,
 }: {
   image: string | null;
   onImageChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  fileRef: UseFormRegisterReturn<"image">;
+  field: ControllerRenderProps<
+    {
+      name: string;
+      image: FileList | string;
+    },
+    "image"
+  >;
 }) => {
   //   const [image, setImage] = useState<string | null>(null);
 
@@ -63,7 +74,11 @@ const UploadAddServerIcon = ({
         type="file"
         id="upload"
         accept="image/*"
-        onChange={(event) => onImageChange(event)}
+        {...fileRef}
+        onChange={(e) => {
+          field.onChange(e.target?.files?.[0] ?? undefined);
+          onImageChange(e);
+        }}
         className="hidden"
       />
       <label

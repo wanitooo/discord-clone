@@ -16,6 +16,7 @@ export class UploadService {
     region: this.configService.getOrThrow('AWS_S3_REGION'),
   });
   async upload(fileName: string, file: Buffer) {
+    const unused = fileName;
     const urlFileName = uuidv4(); // spaces and special characters cause problems in the getPresignedUrl func in s3.ts
     try {
       var response = await this.s3Client.send(
