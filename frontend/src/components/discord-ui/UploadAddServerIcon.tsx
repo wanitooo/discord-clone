@@ -76,7 +76,8 @@ const UploadAddServerIcon = ({
         accept="image/*"
         {...fileRef}
         onChange={(e) => {
-          field.onChange(e.target?.files?.[0] ?? undefined);
+          field.onChange(e.target?.files ?? undefined);
+          // console.log("FIELD INSIDE", field);
           onImageChange(e);
         }}
         className="hidden"

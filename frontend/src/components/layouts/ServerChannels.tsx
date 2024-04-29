@@ -57,7 +57,7 @@ const fetchChannels = async (serverId: number) => {
 
 const ServerChannels = () => {
   const { serverId }: { serverId: number } = useParams({ from: "/app/server" });
-  console.log("server id", serverId);
+  // console.log("server id", serverId);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const ServerChannels = () => {
     },
   });
   // TODO: Add types to fetched data, could use zod schema types
-  console.log("Channels: ", channelsQuery.data);
+  // console.log("Channels: ", channelsQuery.data);
 
   // Conditionally perform actions based on channelsQuery.isFetched
   useEffect(() => {

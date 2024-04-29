@@ -26,7 +26,7 @@ const SidebarIcon = ({
   useEffect(() => {
     const fetchImageUrl = async () => {
       const res = await createPresignedUrlWithClient(imageUrl);
-      console.log(res);
+      // console.log(res);
       setImage(res);
     };
 

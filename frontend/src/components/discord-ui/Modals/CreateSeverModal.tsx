@@ -30,9 +30,10 @@ const formSchema = z.object({
   name: z.string().min(1, {
     message: "Server name is required.",
   }),
-  image: z
-    .instanceof(FileList)
-    .refine((file) => file?.length == 1, "File is required"),
+  image: z.instanceof(FileList).refine((file) => {
+    console.log("file length,", file.length);
+    return file?.length == 1;
+  }, "File is required"),
 });
 
 // const uploadServerImage = async (imageFile: any) => {
@@ -62,7 +63,7 @@ const formSchema = z.object({
 const createServer = async (
   name: string,
   serverOwner: string,
-  imageFile: any
+  imageFile: FileList
 ) => {
   // const fileBlob = await fetch(image).then((r) => r.blob());
   const form = new FormData();
@@ -100,22 +101,23 @@ export const CreateServerModal = () => {
     queryKey: ["uploadServerImage", imageFile],
     queryFn: async () => {
       const { name, image } = form.getValues();
-      console.log("name", name, "image ", image);
+      console.log("name", name, "image ", image[0]);
       return await createServer(name, serverOwner, image[0]);
     },
     enabled: false,
   });
-  const onImageChange = (event: ChangeEvent<HTMLInputElement>): void => {
+  const onImageChange = (): void => {
     console.log("triggered image change");
-    // console.log("form values", form.getValues());
-    // const input = event.target as HTMLInputElement;
     const { image } = form.getValues();
+    // const input = e.target as HTMLInputElement;
+
+    // console.log("input", input);
+    // console.log("files", input.files);
     // // print("image", image);
     if (image) {
-      const file = image[0];
       console.log("image ", image);
-      setImageFile(file);
-      const url = URL.createObjectURL(file);
+      setImageFile(image[0]);
+      const url = URL.createObjectURL(image[0]);
       setImagePreview(url);
     }
   };
@@ -123,7 +125,7 @@ export const CreateServerModal = () => {
 
   const form = useForm<{
     name: string;
-    image: FileList | string;
+    image: File | string;
   }>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -144,6 +146,7 @@ export const CreateServerModal = () => {
       console.log("triggered submit");
       await uploadQuery.refetch();
       form.reset();
+      setImagePreview(null);
       //   router.refresh();
       // onClose();
     } catch (error) {
@@ -180,7 +183,7 @@ export const CreateServerModal = () => {
                   control={form.control}
                   name="image"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col-reverse gap-4">
                       <FormLabel>Server Image</FormLabel>
                       <FormControl>
                         <UploadAddServerIcon
@@ -221,6 +224,7 @@ export const CreateServerModal = () => {
                         placeholder="Enter your server name"
                         {...field}
                         onChange={(e) => {
+                          // console.log("NAME FIELD", field);
                           field.onChange(e.target.value);
                         }}
                       />
