@@ -7,28 +7,17 @@ const UploadAddServerIcon = ({
   fileRef,
   field,
 }: {
-  image: string | null;
+  image: string | undefined;
   onImageChange: (event: ChangeEvent<HTMLInputElement>) => void;
   fileRef: UseFormRegisterReturn<"image">;
   field: ControllerRenderProps<
     {
       name: string;
-      image: FileList | string;
+      image: FileList;
     },
     "image"
   >;
 }) => {
-  //   const [image, setImage] = useState<string | null>(null);
-
-  //   const onImageChange = (event: ChangeEvent<HTMLInputElement>): void => {
-  //     const input = event.target as HTMLInputElement;
-
-  //     if (input.files !== null && input.files.length) {
-  //       const file = input.files[0];
-  //       const url = URL.createObjectURL(file);
-  //       setImage(url);
-  //     }
-  //   };
   const Display = {
     NoImage: (
       <>

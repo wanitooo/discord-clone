@@ -24,7 +24,7 @@ import {
 import UploadAddServerIcon from "../UploadAddServerIcon";
 // import { FileUpload } from "@/components/file-upload";
 import { useModal } from "../../../hooks/global-store";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -33,37 +33,13 @@ const formSchema = z.object({
   image: z.instanceof(FileList).refine((file) => {
     console.log("file length,", file.length);
     return file?.length == 1;
-  }, "File is required"),
+  }, "Select an image to upload."),
 });
-
-// const uploadServerImage = async (imageFile: any) => {
-//   // const fileBlob = await fetch(image).then((r) => r.blob());
-//   const form = new FormData();
-//   // console.log("fileblob ", fileBlob);
-//   form.append("file", imageFile);
-//   const data = await fetch(`http://127.0.0.1:3000/api/files/upload`, {
-//     method: "POST",
-//     mode: "cors",
-//     // headers: {
-//     //   "Content-Type": "multipart/form-data",
-//     // },
-//     body: form,
-//   })
-//     .then((res) => res.json())
-//     .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
-
-//   // const data = axios
-//   //   .get("localhost:3000/api/servers")
-//   //   .then((res) => console.log(res));
-//   console.log("data ", data);
-
-//   return data;
-// };
 
 const createServer = async (
   name: string,
   serverOwner: string,
-  imageFile: FileList
+  imageFile: File
 ) => {
   // const fileBlob = await fetch(image).then((r) => r.blob());
   const form = new FormData();
@@ -82,40 +58,43 @@ const createServer = async (
     .then((res) => res.json())
     .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
 
-  // const data = axios
-  //   .get("localhost:3000/api/servers")
-  //   .then((res) => console.log(res));
-  console.log("data ", data);
+  // console.log("data ", data);
 
   return data;
 };
+
+// TODO: Toast for succesful server creation
+// Refect sidebar servers on modal close
+// Remove preview if cancelled image selection
 export const CreateServerModal = () => {
   const { isOpen, onClose, type } = useModal();
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | undefined>(
+    undefined
+  );
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // const [name, setName] = useState<string>("");
-  const [serverOwner, setServerOwner] = useState<string | null>(null);
+  // Must be taken from the current authenticated user.
+  // @ts-expect-error: cookies not setup yet
+  const [serverOwner, setServerOwner] = useState<string>("");
 
   const uploadQuery = useQuery({
     queryKey: ["uploadServerImage", imageFile],
     queryFn: async () => {
       const { name, image } = form.getValues();
-      console.log("name", name, "image ", image[0]);
-      return await createServer(name, serverOwner, image[0]);
+      // console.log("name", name, "image ", image[0] ? image[0] : null);
+      if (image[0]) {
+        return await createServer(name, serverOwner, image[0]);
+      }
     },
     enabled: false,
   });
-  const onImageChange = (): void => {
-    console.log("triggered image change");
-    const { image } = form.getValues();
-    // const input = e.target as HTMLInputElement;
 
-    // console.log("input", input);
-    // console.log("files", input.files);
-    // // print("image", image);
+  const onImageChange = (): void => {
+    // console.log("triggered image change");
+    const { image } = form.getValues();
+
     if (image) {
-      console.log("image ", image);
+      // console.log("image ", image);
       setImageFile(image[0]);
       const url = URL.createObjectURL(image[0]);
       setImagePreview(url);
@@ -123,14 +102,11 @@ export const CreateServerModal = () => {
   };
   const isModalOpen = isOpen && type === "createServer";
 
-  const form = useForm<{
-    name: string;
-    image: File | string;
-  }>({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      image: "",
+      image: undefined,
     },
   });
 
@@ -140,17 +116,16 @@ export const CreateServerModal = () => {
 
   const onSubmit = async () => {
     // console.log("VALUES", values);
-    console.log("FORM", form.getValues());
+    // console.log("FORM", form.getValues());
     try {
       //   await axios.post("/api/servers", values);
-      console.log("triggered submit");
+      // console.log("triggered submit");
+      setImagePreview(undefined);
       await uploadQuery.refetch();
-      form.reset();
-      setImagePreview(null);
-      //   router.refresh();
-      // onClose();
+      handleClose();
+      // router.refresh();
     } catch (error) {
-      console.log(error);
+      console.log(error); // TODO: actually handle this error
     }
   };
 
@@ -183,8 +158,8 @@ export const CreateServerModal = () => {
                   control={form.control}
                   name="image"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col-reverse gap-4">
-                      <FormLabel>Server Image</FormLabel>
+                    <FormItem className="flex flex-col items-center gap-4">
+                      {/* <FormLabel>Server Image</FormLabel> */}
                       <FormControl>
                         <UploadAddServerIcon
                           fileRef={fileRef}
@@ -192,15 +167,6 @@ export const CreateServerModal = () => {
                           field={field}
                           onImageChange={onImageChange}
                         />
-
-                        {/* <Input
-                          type="file"
-                          placeholder="Choose image server"
-                          {...fileRef}
-                          onChange={(e) => {
-                            field.onChange(e.target?.files?.[0] ?? undefined);
-                          }}
-                        /> */}
                       </FormControl>
                       {/* <FormDescription>Upload a file</FormDescription> */}
                       <FormMessage />
@@ -236,7 +202,6 @@ export const CreateServerModal = () => {
             </div>
 
             <DialogFooter className="bg-gray-100 px-6 py-4">
-              {/* this is hack, onClick should not be needed in this form submit */}
               <Button disabled={isLoading} type="submit">
                 Create
               </Button>
