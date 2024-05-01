@@ -7,7 +7,7 @@ import {
 import { DRIZZLE_ORM } from 'src/nest-drizzle/constants';
 import { PostgresJsDb } from 'src/nest-drizzle';
 import { messages } from 'src/nest-drizzle/discordSchema';
-import { eq, lt, gte, ne } from 'drizzle-orm';
+import { eq, lt, gte, ne, asc } from 'drizzle-orm';
 @Injectable()
 export class ChatsService {
   constructor(@Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb) {}
@@ -39,7 +39,8 @@ export class ChatsService {
       return await tx
         .select()
         .from(messages)
-        .where(eq(messages.channelId, channelId));
+        .where(eq(messages.channelId, channelId))
+        .orderBy(asc(messages.updatedAt));
     });
     // console.log('RES ', result);
     return result;

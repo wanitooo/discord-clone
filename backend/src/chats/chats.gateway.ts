@@ -22,7 +22,7 @@ type MessageDto = {
   userId: string;
   message: string;
 };
-@WebSocketGateway()
+@WebSocketGateway({ cors: true })
 export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private readonly chatsService: ChatsService) {}
   @WebSocketServer()
@@ -64,9 +64,9 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() getMessage: any,
     @ConnectedSocket() client: Socket,
   ) {
-    const { channelId } = getMessage;
+    const { userId, channelId } = getMessage;
     client.join(`channel-${channelId}`);
-    // console.log('Joined channel ', channelId);
+    console.log('user ', userId, ' joined channel ', channelId);
     // console.log(client.rooms);
     this.server.to(`channel-${channelId}`).emit('channelMessages', {
       channelId,
