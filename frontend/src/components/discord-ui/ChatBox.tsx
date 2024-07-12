@@ -63,24 +63,18 @@ const ChatBox = () => {
       </div>
       {/* <ChatBoxChannel /> */}
       <ScrollArea className="w-full h-full px-4" color="black">
-        <div className="hover:bg-discord-black/50">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Delectus,
-          consequatur ipsam nisi, a natus ratione iusto optio necessitatibus
-          sunt, quasi repellendus molestiae unde quo. Voluptas cumque fugit
-          corrupti ratione aspernatur ad, architecto beatae modi sint dolorum
-          ab, tempora praesentium natus ullam repellat! Tempore, nihil
-          consequatur! Aliquid tenetur quam dicta nulla?
+        <div className="">
           {/* {JSON.stringify(image)} */}
           {/* <img src={image} alt="aws image" /> */}
           {/* {JSON.stringify(chats)} */}
-          {chats?.map((chat) => (
-            <div>
-              <span>
+          <div>
+            {chats?.map((chat) => (
+              <div className="hover:bg-discord-black/50">
                 {/* {chat} */}
                 User {chat.userId}: {chat.chat}{" "}
-              </span>
-            </div>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
       </ScrollArea>
     </>
