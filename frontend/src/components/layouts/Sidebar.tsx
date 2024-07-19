@@ -62,10 +62,7 @@ const Sidebar = () => {
         <Separator className="bg-discord-gray w-1/2 mx-auto" />
         <ScrollArea className="flex-1 w-full ">
           {servers.map((server) => (
-            <Link
-              to={`/app/server/${server.serverId}`}
-              params={{ serverId: "0" }}
-            >
+            <Link to={`/app/${server.serverId}`} params={{ serverId: "0" }}>
               <SidebarIcon
                 label={`${server.serverName}`}
                 name={`${server.serverName}`}

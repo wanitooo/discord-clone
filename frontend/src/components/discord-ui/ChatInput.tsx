@@ -12,6 +12,7 @@ import {
 import { PlusCircleIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { useForm } from "react-hook-form";
 import { io } from "socket.io-client";
+import { useParams } from "@tanstack/react-router";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   "http://localhost:3000"
@@ -27,6 +28,8 @@ const ChatInput = () => {
       chat: "",
     },
   });
+
+  const { channelId }: { channelId: number } = useParams();
   const onSubmit = (data) => {
     // console.log("TEST", );
     socket.emit("sendMessage", { userId: 1, chat: data.chat, channelId: 9 });

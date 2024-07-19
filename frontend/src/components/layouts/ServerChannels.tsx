@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { server } from "../../routes/appRoutes/serverRoutes";
 import { useEffect, useState } from "react";
 import ServerOptionsDropdown from "../discord-ui/ServerOptionsDropdown";
@@ -15,28 +15,10 @@ import {
   ChevronRightIcon,
   PlusIcon,
 } from "@heroicons/react/24/solid";
-import { Tooltip, TooltipProvider } from "../shadcn/ui";
-import { TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
+import { Link } from "@tanstack/react-router";
 import IconTooltip from "../discord-ui/IconTooltip";
 import { useQuery } from "@tanstack/react-query";
-interface ServerSidebar {
-  serverName: string;
-  serverOwner: string;
-  channels: string[];
-}
-
-const dummySidebarData = [
-  {
-    serverName: "Server 1",
-    serverOwner: "Server 1 owner",
-    channels: ["Channel Orange", "Chanel", "Blonded"],
-  },
-  {
-    serverName: "Server 2",
-    serverOwner: "Server 2 owner",
-    channels: ["505", "Sweetdreams TN", "Miracle Aligner"],
-  },
-];
+import ChatInput from "../discord-ui/ChatInput";
 
 const fetchChannels = async (serverId: number) => {
   return await fetch(`http://127.0.0.1:3000/api/channels/${serverId}`, {
@@ -48,23 +30,12 @@ const fetchChannels = async (serverId: number) => {
   })
     .then((res) => res.json())
     .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
-
-  // const data = axios
-  //   .get("localhost:3000/api/servers")
-  //   .then((res) => console.log(res));
-  // console.log("data ", data);
 };
 
 const ServerChannels = () => {
   const { serverId }: { serverId: number } = useParams({ from: "/app/server" });
   // console.log("server id", serverId);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (serverId === undefined) {
-      navigate({ to: "/app/server/0" }); // Send to the first item in get all channels in a server
-    }
-  }, []);
 
   // console.log("server id", serverId);
 
@@ -93,68 +64,84 @@ const ServerChannels = () => {
     console.log("Error loading data...", channelsQuery.error);
   }
   return (
-    <div className="h-screen bg-discord-black w-[245px]">
-      {serverId ? (
-        <div>
-          {/*  Drop down component here */}
-          <ServerOptionsDropdown />
+    <>
+      <div className="h-screen bg-discord-black w-[245px]">
+        {serverId ? (
           <div>
-            {/* TODO: EVENTS Component*/}
-            <Collapsible
-              className="w-full flex flex-col
+            {/*  Drop down component here */}
+            <ServerOptionsDropdown />
+            <div>
+              {/* TODO: EVENTS Component*/}
+              <Collapsible
+                className="w-full flex flex-col
             text-gray-400 text-sm"
-            >
-              <CollapsibleTrigger className="w-11/12">
-                <div className="flex items-center my-4">
-                  <div className="w-full flex items-center gap-1 hover:text-white">
-                    <ChevronRightIcon width={15} />
-                    <span className="text-xs">CATEGORY NAME</span>
+              >
+                <CollapsibleTrigger className="w-11/12">
+                  <div className="flex items-center my-4">
+                    <div className="w-full flex items-center gap-1 hover:text-white">
+                      <ChevronRightIcon width={15} />
+                      <span className="text-xs">CATEGORY NAME</span>
+                    </div>
+                    <IconTooltip
+                      align="center"
+                      side="top"
+                      label="Create channel"
+                    >
+                      <PlusIcon className="ml-2" width={20} />
+                    </IconTooltip>
                   </div>
-                  <IconTooltip align="center" side="top" label="Create channel">
-                    <PlusIcon className="ml-2" width={20} />
-                  </IconTooltip>
-                </div>
-              </CollapsibleTrigger>
-              {channels.map((channel, idx) => (
-                <CollapsibleContent key={idx} className="">
-                  <div
-                    className="w-11/12 flex items-center justify-between 
+                </CollapsibleTrigger>
+                {channels.map((channel, idx) => (
+                  <CollapsibleContent key={idx} className="">
+                    <Link
+                      to={`/app/${serverId}/${channel.channelId}`}
+                      params={{ serverId: "0" }}
+                    >
+                      <div
+                        className="w-11/12 flex items-center justify-between 
                       px-2 py-1 ml-1
                       text-sm hover:text-white
                       hover:bg-discord-gray hover:rounded-md"
-                  >
-                    <div className="flex items-center justify-center">
-                      <HashtagIcon width={15} className="mr-2" />
-                      <span>{channel.channelName}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <IconTooltip
-                        align={"center"}
-                        side="top"
-                        label="Create Invite"
                       >
-                        {/* TODO: Invite Modal */}
-                        <UserPlusIcon width={15} />
-                      </IconTooltip>
-                      {/* TODO: Edit channel Modal */}
-                      <IconTooltip
-                        align={"center"}
-                        side="top"
-                        label="Edit channel"
-                      >
-                        <Cog8ToothIcon width={15} />
-                      </IconTooltip>
-                    </div>
-                  </div>
-                </CollapsibleContent>
-              ))}
-            </Collapsible>
+                        <div className="flex items-center justify-center">
+                          <HashtagIcon width={15} className="mr-2" />
+                          <span>{channel.channelName}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <IconTooltip
+                            align={"center"}
+                            side="top"
+                            label="Create Invite"
+                          >
+                            {/* TODO: Invite Modal */}
+                            <UserPlusIcon width={15} />
+                          </IconTooltip>
+                          {/* TODO: Edit channel Modal */}
+                          <IconTooltip
+                            align={"center"}
+                            side="top"
+                            label="Edit channel"
+                          >
+                            <Cog8ToothIcon width={15} />
+                          </IconTooltip>
+                        </div>
+                      </div>
+                    </Link>
+                  </CollapsibleContent>
+                ))}
+              </Collapsible>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div>"Pick a server"</div> // Should be a loading state instead
-      )}
-    </div>
+        ) : (
+          <div>"Pick a server"</div> // Should be a loading state instead
+        )}
+      </div>
+
+      <div className="w-[1215px] h-screen bg-discord-gray flex flex-col ">
+        <Outlet />
+        {/* <ChatInput /> */}
+      </div>
+    </>
   );
 };
 

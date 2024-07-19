@@ -2,7 +2,11 @@ import { Router, Route, RootRoute } from "@tanstack/react-router";
 import App from "../pages/App.tsx";
 import Root from "../Root.tsx";
 import landingRouteTree from "./miscRoutes/index.tsx";
-import { server, serverDetail } from "./appRoutes/serverRoutes.tsx";
+import {
+  channelDetail,
+  server,
+  serverDetail,
+} from "./appRoutes/serverRoutes.tsx";
 
 // Create a root route
 export const rootRoute = new RootRoute({
@@ -26,6 +30,7 @@ function about() {
   return <div>Hello from About!</div>;
 }
 // Create the route tree using your routes
+export const serverRouteTree = serverDetail.addChildren([channelDetail]);
 export const appRouteTree = appRoute.addChildren([server, serverDetail]);
 const routeTree = rootRoute.addChildren([
   landingRouteTree,

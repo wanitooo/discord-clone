@@ -36,6 +36,12 @@
 $ pnpm install
 ```
 
+### Running Drizzle Kit Studio
+
+```bash
+$ pnpm drizzle-kit studio
+```
+
 ## Running the app
 
 ```bash

@@ -12,7 +12,7 @@ const App = () => {
   // console.log("location", location.pathname);
   useEffect(() => {
     if (location.pathname === "/app") {
-      navigate({ to: "/app/server" }); // /app/server will redirect to the default server
+      navigate({ to: "/app" }); // /app/server will redirect to the default server
     }
   }, []);
 
@@ -20,12 +20,6 @@ const App = () => {
     <div className="w-full flex flex-row text-white">
       <Sidebar></Sidebar>
       <Outlet />
-      <div className="w-[1215px] h-screen bg-discord-gray flex flex-col ">
-        {" "}
-        {/* Chat and shit */}
-        <ChatBox />
-        <ChatInput />
-      </div>
     </div>
   );
 };
