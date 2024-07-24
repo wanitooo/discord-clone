@@ -13,18 +13,22 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   "http://localhost:3000"
 );
 // TODO: get type interface from a lib folder of types -> zod
-// append to the current list of chats, instead of getting all the rows -> chat service + chat box set state
+// - append to the current list of chats, instead of getting all the rows -> chat service + chat box set state
+// - change userId 21 to actual user id, get from cookies
+// - update messages to only specific channels.
 interface Chat {
   userId: number;
   chat: string;
   channelId: number;
 }
+
 const ChatBox = () => {
   const [image, setImage] = useState("");
   const [chats, setChats] = useState<Chat[] | undefined>();
   const [updateChat, setUpdateChat] = useState<boolean>(false);
 
-  const { channelId }: { channelId: number } = useParams();
+  let { channelId }: { channelId: string } = useParams();
+  channelId = parseInt(channelId);
 
   useEffect(() => {
     const fetchImageUrl = async () => {
@@ -37,23 +41,28 @@ const ChatBox = () => {
   }, []);
 
   useEffect(() => {
-    socket.emit("joinChannel", { userId: 21, channelId: 9 });
-    socket.emit("channelMessages", { userId: 21, channelId: 9 }, (data) => {
-      // setChats(data); trigger get all channel messages
+    // console.log("channel ID", channelId);
+
+    socket.emit("joinChannel", { userId: 21, channelId: channelId });
+    socket.emit("channelMessages", {
+      userId: 21,
+      channelId: channelId,
     });
+  }, [channelId]);
 
-    socket.on("channelMessages", (data) => {
-      setChats(data.messages); // retrieves channel messages
-      // console.log("chats", data);
+  socket.on("channelMessages", (data) => {
+    setChats(data.messages); // retrieves channel messages
+    // console.log("chats", data);
+  });
+
+  socket.on("newMessageEvent", (data) => {
+    // console.log("new message", data);
+
+    socket.emit("channelMessages", {
+      userId: 21,
+      channelId: channelId,
     });
-
-    socket.on("newMessageEvent", (data) => {
-      console.log("new message", data);
-
-      socket.emit("channelMessages", { userId: 22, channelId: 9 });
-    });
-  }, []);
-
+  });
   // console.log("chats?.channelId == channelId", chats[0]?.channelId);
   // console.log("chats", typeof chats);
 
@@ -75,7 +84,7 @@ const ChatBox = () => {
               chat.channelId == channelId ? (
                 <div className="hover:bg-discord-black/50">
                   {/* {chat} */}
-                  User {chat.userId}: {chat.chat}{" "}
+                  CH: {chat.channelId} User {chat.userId}: {chat.chat}{" "}
                 </div>
               ) : (
                 ""

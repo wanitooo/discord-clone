@@ -29,10 +29,14 @@ const ChatInput = () => {
     },
   });
 
-  const { channelId }: { channelId: number } = useParams();
+  const { channelId }: { channelId: string } = useParams();
   const onSubmit = (data) => {
     // console.log("TEST", );
-    socket.emit("sendMessage", { userId: 1, chat: data.chat, channelId: 9 });
+    socket.emit("sendMessage", {
+      userId: 1,
+      chat: data.chat,
+      channelId: parseInt(channelId),
+    });
     chatInputForm.reset();
   };
 
