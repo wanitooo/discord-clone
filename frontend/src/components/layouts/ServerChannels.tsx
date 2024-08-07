@@ -19,6 +19,7 @@ import { Link } from "@tanstack/react-router";
 import IconTooltip from "../discord-ui/IconTooltip";
 import { useQuery } from "@tanstack/react-query";
 import ChatInput from "../discord-ui/ChatInput";
+import { useModal } from "../../hooks/global-store";
 
 const fetchChannels = async (serverId: number) => {
   return await fetch(`http://127.0.0.1:3000/api/channels/${serverId}`, {
@@ -37,6 +38,7 @@ const ServerChannels = () => {
   // console.log("server id", serverId);
   const navigate = useNavigate();
 
+  const { onOpen } = useModal();
   // console.log("server id", serverId);
 
   const [channels, setChannels] = useState([]);
@@ -82,13 +84,16 @@ const ServerChannels = () => {
                       <ChevronRightIcon width={15} />
                       <span className="text-xs">CATEGORY NAME</span>
                     </div>
-                    <IconTooltip
-                      align="center"
-                      side="top"
-                      label="Create channel"
-                    >
-                      <PlusIcon className="ml-2" width={20} />
-                    </IconTooltip>
+
+                    <button onClick={() => onOpen("createChannel")}>
+                      <IconTooltip
+                        align="center"
+                        side="top"
+                        label="Create channel"
+                      >
+                        <PlusIcon className="ml-2" width={20} />
+                      </IconTooltip>
+                    </button>
                   </div>
                 </CollapsibleTrigger>
                 {channels.map((channel, idx) => (
