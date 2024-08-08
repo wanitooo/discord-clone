@@ -20,10 +20,14 @@ export const insertChannelSchema = createInsertSchema(channels, {
   type: z.enum(['text', 'voice', 'server', 'bot'], {
     invalid_type_error: 'Type can only be  `text`, `voice`, `server`, or `bot`',
   }),
+  mode: z.enum(['public', 'private'], {
+    invalid_type_error: 'Type can only be `public` or `private`',
+  }),
 }).required({
   name: true,
   serverId: true,
   type: true,
+  mode: true,
 });
 
 export const updateChannelSchema = createInsertSchema(channels, {

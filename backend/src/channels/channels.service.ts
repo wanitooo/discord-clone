@@ -12,8 +12,8 @@ export class ChannelsService {
   constructor(@Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb) {}
 
   create(CreateChannelDto: CreateChannelDto) {
-    const { name, serverId, type } = CreateChannelDto;
-
+    const { name, serverId, type, mode } = CreateChannelDto;
+    console.log('~~~creating channel:', name, serverId, type, mode);
     const result = this.db.transaction(async (tx) => {
       const ins = await tx
         .insert(channels)
@@ -21,12 +21,14 @@ export class ChannelsService {
           name,
           serverId,
           type,
+          mode,
         })
         .returning({
           insertedId: channels.id,
           insertedName: channels.name,
           insertedServerId: channels.serverId,
           insertedType: channels.type,
+          insertedMode: channels.mode,
         });
       // console.log('ins', ins);
       // If ins not null tx.rollback()
@@ -48,6 +50,7 @@ export class ChannelsService {
         createdChannelName: ins[0].insertedName,
         createdServerId: ins[0].insertedServerId,
         createdType: ins[0].insertedType,
+        createdMode: ins[0].insertedMode,
         inserted: ins ? true : false,
       };
     });
