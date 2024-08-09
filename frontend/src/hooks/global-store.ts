@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+import { persist } from "zustand/middleware";
 export type ModalType = "createServer" | "createChannel";
 
 interface ModalStore {
@@ -10,7 +11,7 @@ interface ModalStore {
 }
 export type ThemeType = "dark" | "light";
 
-interface ThemeStore {
+export interface ThemeStore {
   type: ThemeType | null;
   setTheme: (type: ThemeType) => void;
 }
@@ -22,7 +23,14 @@ export const useModal = create<ModalStore>((set) => ({
   onClose: () => set(() => ({ isOpen: false, type: null })),
 }));
 
-export const useTheme = create<ThemeStore>((set) => ({
-  type: null,
-  setTheme: (type) => set(() => ({ type })),
-}));
+export const useTheme = create<ThemeStore>()(
+  persist(
+    (set) => ({
+      type: "light",
+      setTheme: (type) => set(() => ({ type })),
+    }),
+    {
+      name: "theme",
+    }
+  )
+);

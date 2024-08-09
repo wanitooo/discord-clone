@@ -22,12 +22,10 @@ import {
   Button,
 } from "../../shadcn/ui";
 
-import UploadAddServerIcon from "../UploadAddServerIcon";
-// import { FileUpload } from "@/components/file-upload";
 import { useModal } from "../../../hooks/global-store";
-import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "../../shadcn/ui/RadioGroup";
 import { Switch } from "../../shadcn/ui/Switch";
+import { useParams } from "@tanstack/react-router";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -39,38 +37,58 @@ const formSchema = z.object({
   isPrivate: z.boolean().default(false),
 });
 
-// const createChannel = async (
-//   name: string,
-//   channelType: string,
-//   isPrivate: boolean
-// ) => {
-//   // const fileBlob = await fetch(image).then((r) => r.blob());
-//   const form = new FormData();
-//   // console.log("fileblob ", fileBlob);
-//   form.append("file", imageFile);
-//   form.append("name", name);
-//   form.append("serverOwner", "1"); // should be taken form a cookie that contains the user
-//   const data = await fetch(`http://127.0.0.1:3000/api/servers`, {
-//     method: "POST",
-//     mode: "cors",
-//     // headers: {
-//     //   "Content-Type": "multipart/form-data",
-//     // },
-//     body: form,
-//   })
-//     .then((res) => res.json())
-//     .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
+const createChannel = async (
+  name: string,
+  channelType: string,
+  isPrivate: boolean,
+  serverId: number | undefined
+) => {
+  const data = await fetch(`http://127.0.0.1:3000/api/channels`, {
+    method: "POST",
+    mode: "cors",
 
-//   // console.log("data ", data);
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name,
+      serverId,
+      type: channelType,
+      mode: isPrivate ? "private" : "public",
+    }),
+  })
+    .then((res) => res.json())
+    .catch((res) =>
+      Promise.reject(new Error(`Failed to create channel: ${res}`))
+    );
 
-//   return data;
-// };
+  console.log("channel ", data);
+
+  return data;
+};
 
 // TODO: Toast for succesful channel creation
 // Add icons to channel type radio buttons
 // Add icons in general
 // Polish alignments
 export const CreateChannelModal = () => {
+  const { serverId } = useParams();
+  // console.log("serverid", serverId);
+  const createChannelQuery = useQuery({
+    queryKey: ["createChannelQuery", serverId],
+    queryFn: async () => {
+      const { name, channelType, isPrivate } = form.getValues();
+      // console.log("name", name, "image ", image[0] ? image[0] : null);
+      return await createChannel(
+        name,
+        channelType,
+        isPrivate,
+        parseInt(serverId)
+      );
+    },
+    enabled: false,
+  });
+
   const { isOpen, onClose, type } = useModal();
   const isModalOpen = isOpen && type === "createChannel";
 
@@ -90,9 +108,9 @@ export const CreateChannelModal = () => {
     // console.log("FORM", form.getValues());
     try {
       //   await axios.post("/api/servers", values);
-      // console.log("triggered submit");
+      // console.log("triggered submit")
       // setImagePreview(undefined);
-      // await uploadQuery.refetch();
+      await createChannelQuery.refetch();
       handleClose();
       // router.refresh();
     } catch (error) {

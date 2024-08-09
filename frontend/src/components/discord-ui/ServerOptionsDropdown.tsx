@@ -34,6 +34,7 @@ const ServerOptionsDropdown = () => {
           hover:bg-discord-gray/70
           font-normal
           transition-all
+          dark:text-white
         "
         >
           Server Options

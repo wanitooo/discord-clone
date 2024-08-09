@@ -66,6 +66,7 @@ const createServer = async (
 // TODO: Toast for succesful server creation
 // Refect sidebar servers on modal close
 // Remove preview if cancelled image selection
+// Explore a singular query client so you can refetch the channels after creating one
 export const CreateServerModal = () => {
   const { isOpen, onClose, type } = useModal();
   const [imagePreview, setImagePreview] = useState<string | undefined>(
@@ -123,7 +124,7 @@ export const CreateServerModal = () => {
       setImagePreview(undefined);
       await uploadQuery.refetch();
       handleClose();
-      // router.refresh();
+      router.refresh();
     } catch (error) {
       console.log(error); // TODO: actually handle this error
     }

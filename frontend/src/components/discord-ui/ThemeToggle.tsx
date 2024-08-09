@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   DropdownMenu,
@@ -10,6 +10,7 @@ import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
 import { useTheme } from "../../hooks/global-store";
 const ThemeToggle = () => {
   const { setTheme } = useTheme();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
