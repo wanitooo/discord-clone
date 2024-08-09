@@ -52,14 +52,14 @@ const Sidebar = () => {
   // Always call useEffect unconditionally
   return (
     <>
-      <div className="h-screen w-[72px] bg-discord-blackest flex flex-col items-center gap-2 ">
+      <div className="h-screen w-[72px] bg-discord-light dark:bg-discord-blackest flex flex-col items-center gap-2 ">
         <SidebarIcon
           align="center"
           label="Add a server"
           side="right"
           type="action"
         />
-        <Separator className="bg-discord-gray w-1/2 mx-auto" />
+        <Separator className="bg-gray-300 dark:bg-discord-gray w-1/2 mx-auto" />
         <ScrollArea className="flex-1 w-full ">
           {servers.map((server) => (
             <Link to={`/app/${server.serverId}`} params={{ serverId: "0" }}>

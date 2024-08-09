@@ -24,7 +24,11 @@ const SidebarTooltip = ({
     <TooltipProvider>
       <Tooltip delayDuration={50}>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent side={side} align={align}>
+        <TooltipContent
+          className="bg-white text-discord-black dark:bg-black dark:text-white"
+          side={side}
+          align={align}
+        >
           <p className="font-semibold">{label?.toLowerCase()}</p>
         </TooltipContent>
       </Tooltip>

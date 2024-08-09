@@ -20,6 +20,7 @@ import IconTooltip from "../discord-ui/IconTooltip";
 import { useQuery } from "@tanstack/react-query";
 import ChatInput from "../discord-ui/ChatInput";
 import { useModal } from "../../hooks/global-store";
+import { cn } from "../shadcn/utils/utils";
 
 const fetchChannels = async (serverId: number) => {
   return await fetch(`http://127.0.0.1:3000/api/channels/${serverId}`, {
@@ -35,11 +36,8 @@ const fetchChannels = async (serverId: number) => {
 
 const ServerChannels = () => {
   const { serverId }: { serverId: number } = useParams({ from: "/app/server" });
-  // console.log("server id", serverId);
-  const navigate = useNavigate();
-
   const { onOpen } = useModal();
-  // console.log("server id", serverId);
+  const [collapsed, setCollapsed] = useState(false);
 
   const [channels, setChannels] = useState([]);
   const channelsQuery = useQuery({
@@ -67,7 +65,7 @@ const ServerChannels = () => {
   }
   return (
     <>
-      <div className="h-screen bg-discord-black w-[245px]">
+      <div className="h-screen bg-discord-lighter dark:bg-discord-black w-[245px]">
         {serverId ? (
           <div>
             {/*  Drop down component here */}
@@ -76,12 +74,19 @@ const ServerChannels = () => {
               {/* TODO: EVENTS Component*/}
               <Collapsible
                 className="w-full flex flex-col
-            text-gray-400 text-sm"
+            text-discord-gray/75
+            dark:text-gray-400 text-sm
+            "
+                open={collapsed}
+                onOpenChange={setCollapsed}
               >
-                <CollapsibleTrigger className="w-11/12">
+                <CollapsibleTrigger className="w-11/12 group" asChild>
                   <div className="flex items-center my-4">
-                    <div className="w-full flex items-center gap-1 hover:text-white">
-                      <ChevronRightIcon width={15} />
+                    <div className="w-full flex items-center gap-1 dark:hover:text-white hover:text-black ">
+                      <ChevronRightIcon
+                        width={15}
+                        className={cn(collapsed ? "rotate-90" : "", "ml-2")}
+                      />
                       <span className="text-xs">CATEGORY NAME</span>
                     </div>
 
@@ -105,8 +110,11 @@ const ServerChannels = () => {
                       <div
                         className="w-11/12 flex items-center justify-between 
                       px-2 py-1 ml-1
-                      text-sm hover:text-white
-                      hover:bg-discord-gray hover:rounded-md"
+                      text-sm 
+                      hover:bg-discord-light
+                      hover:text-discord-blackest
+                      dark:hover:text-white
+                      dark:hover:bg-discord-gray hover:rounded-sm"
                       >
                         <div className="flex items-center justify-center">
                           <HashtagIcon width={15} className="mr-2" />
@@ -142,7 +150,7 @@ const ServerChannels = () => {
         )}
       </div>
 
-      <div className="w-[1215px] h-screen bg-discord-gray flex flex-col ">
+      <div className="w-[1215px] h-screen bg-white dark:bg-discord-gray flex flex-col ">
         <Outlet />
         {/* <ChatInput /> */}
       </div>

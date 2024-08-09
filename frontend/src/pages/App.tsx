@@ -1,8 +1,6 @@
 import { Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import Sidebar from "../components/layouts/Sidebar";
 import { useEffect } from "react";
-import ChatBox from "../components/discord-ui/ChatBox";
-import ChatInput from "../components/discord-ui/ChatInput";
 const App = () => {
   const { location } = useRouterState();
   const navigate = useNavigate();

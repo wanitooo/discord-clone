@@ -44,6 +44,12 @@ body :root {
     --discord-gray: 233 7% 21%;
     /* --discord-gray: #313338; */
 
+    --discord-light: 216 8% 88%;
+    /* --discord-light: #DFE1E4; */
+
+    --discord-lighter: 220 13% 95%;
+    /* --discord-lighter: #F2F3F5; */
+
     --radius: 0.5rem;
   }
 

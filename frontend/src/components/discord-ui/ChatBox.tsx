@@ -68,13 +68,17 @@ const ChatBox = () => {
 
   return (
     <>
-      <div className="w-full h-12 flex flex-row justify-between px-4 py-2 shadow border-b-2 border-b-discord-gray ">
+      <div
+        className="w-full h-12 flex flex-row justify-between px-4 py-2 shadow border-b-2  text-discord-gray
+      dark:border-b-discord-gray
+      dark:text-white"
+      >
         <Bars2Icon height={35} width={35} className="text-center h-full" />
         <Bars2Icon height={35} width={35} className="text-center" />
       </div>
       {/* <ChatBoxChannel /> */}
 
-      <ScrollArea className="w-full h-full px-4" color="black">
+      <ScrollArea className="w-full h-full" color="black">
         <div className="">
           {/* {JSON.stringify(image)} */}
           {/* <img src={image} alt="aws image" /> */}
@@ -82,7 +86,13 @@ const ChatBox = () => {
           <div>
             {chats?.map((chat) =>
               chat.channelId == channelId ? (
-                <div className="hover:bg-discord-black/50">
+                <div
+                  className=" text-discord-gray 
+                hover:bg-discord-black/25
+                dark:hover:bg-discord-black/50 px-4
+               dark:text-white 
+                "
+                >
                   {/* {chat} */}
                   CH: {chat.channelId} User {chat.userId}: {chat.chat}{" "}
                 </div>
@@ -93,7 +103,7 @@ const ChatBox = () => {
           </div>
         </div>
       </ScrollArea>
-      <ChatInput />
+      <ChatInput channelName={channelId} />
     </>
   );
 };

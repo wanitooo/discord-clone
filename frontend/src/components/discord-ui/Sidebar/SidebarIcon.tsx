@@ -17,7 +17,6 @@ const SidebarIcon = ({
   align = "center",
   side = "right",
   label = "server",
-  name,
   imageUrl,
 }: SidebarProps) => {
   const { onOpen } = useModal();
@@ -41,7 +40,7 @@ const SidebarIcon = ({
         {/* If hovering, show half bar */}
         <div
           className={cn(
-            "w-[5px] h-1 bg-white rounded-r-full opacity-0 group-hover:h-6 group-hover:opacity-100 absolute left-0   transition-all duration-300  ease-in-out   animate-in",
+            "w-[5px] h-1 bg-black rounded-r-full dark:bg-white opacity-0 group-hover:h-6 group-hover:opacity-100 absolute left-0   transition-all duration-300  ease-in-out   animate-in",
             type == "server" ? "" : "hidden"
           )}
         ></div>
@@ -70,7 +69,6 @@ const SidebarIcon = ({
           <button onClick={() => onOpen("createServer")}>
             <div
               className="
-              bg-discord-gray
               w-10 h-10 rounded-3xl 
               flex flex-col
               items-center
@@ -81,6 +79,8 @@ const SidebarIcon = ({
               ease-in-out
               group-hover:rounded-xl 
               group-hover:bg-green-500
+             bg-white
+             dark:bg-discord-gray
               "
             >
               <PlusIcon

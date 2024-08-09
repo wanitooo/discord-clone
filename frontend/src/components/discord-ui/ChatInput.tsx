@@ -22,7 +22,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
 // create zod validator
 // allow file inputs
 // make better plus icon
-const ChatInput = () => {
+const ChatInput = ({ channelName = " " }) => {
   const chatInputForm = useForm({
     defaultValues: {
       chat: "",
@@ -56,12 +56,16 @@ const ChatInput = () => {
                   <PlusCircleIcon
                     height={25}
                     width={25}
-                    className="absolute top-1 left-8"
+                    className="absolute top-1 left-8
+                   text-discord-gray
+                   dark:text-white
+                    "
                   />
                   <Input
                     name="chat input"
-                    className="bg-[#383a40] pl-12 mb-2
+                    className="bg-discord-lighter text-black dark:text-white dark:bg-[#383a40] pl-12 mb-2
                     border-none outline-0 border-0 focus-visble:ring-1"
+                    placeholder={`Message #${channelName}`}
                     {...field}
                   />
                 </div>

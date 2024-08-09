@@ -51,6 +51,8 @@ module.exports = {
           blackest: "hsl(var(--discord-blackest))",
           black: "hsl(var(--discord-black))",
           gray: "hsl(var(--discord-gray))",
+          light: "hsl(var(--discord-light))",
+          lighter: "hsl(var(--discord-lighter))",
         },
         card: {
           DEFAULT: "hsl(var(--card))",

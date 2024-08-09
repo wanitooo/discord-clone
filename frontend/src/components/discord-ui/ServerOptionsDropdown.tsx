@@ -28,13 +28,19 @@ const ServerOptionsDropdown = () => {
         <Button
           className="
           rounded-none 
-          bg-discord-black  
           w-full h-12 flex-items-center justify-between
-          border-b-2 border-discord-black
-          hover:bg-discord-gray/70
+          border-b-2 
           font-normal
           transition-all
+          bg-discord-lighter
+          text-discord-blackest
+          hover:bg-discord-light
           dark:text-white
+          dark:bg-discord-black 
+          dark:border-discord-black
+          dark:hover:bg-discord-gray/70
+          font-semibold
+          dark:font-medium
         "
         >
           Server Options
@@ -47,10 +53,13 @@ const ServerOptionsDropdown = () => {
         flex flex-col
         w-[210px]
         text-xs font-medium text-black
-        bg-discord-blackest
         space-y-[2px] my-2 py-2
         rounded-sm
         focus:outline-none
+        shadow
+        bg-white
+        text-discord-blackest
+        dark:bg-discord-blackest
         "
       >
         <DropdownMenuItem
@@ -65,12 +74,12 @@ const ServerOptionsDropdown = () => {
           Invite People
           <PersonIcon className="h-4 w-4 ml-auto" />
         </DropdownMenuItem>
-        <Separator className="mx-auto w-11/12 bg-discord-black " />
+        <Separator className="mx-auto w-11/12 bg-discord-light dark:bg-discord-black " />
         <DropdownMenuItem
           onClick={() => {}}
           className="
           flex px-3 py-2 mx-2 rounded-sm
-          text-gray-400 text-xs 
+          text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
           cursor-pointer
           "
@@ -83,7 +92,7 @@ const ServerOptionsDropdown = () => {
           onClick={() => {}}
           className="
           flex px-3 py-2 mx-2 rounded-sm
-          text-gray-400 text-xs 
+          text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
           cursor-pointer
           "
@@ -96,7 +105,7 @@ const ServerOptionsDropdown = () => {
           onClick={() => {}}
           className="
           flex px-3 py-2 mx-2 rounded-sm
-          text-gray-400 text-xs 
+          text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
           cursor-pointer
           "
@@ -104,13 +113,13 @@ const ServerOptionsDropdown = () => {
           Create Category
           <FilePlusIcon className="h-4 w-4 ml-auto" />
         </DropdownMenuItem>
-        <Separator className="mx-auto w-11/12 bg-discord-black" />
+        <Separator className="mx-auto w-11/12 bg-discord-light dark:bg-discord-black" />
 
         <DropdownMenuItem
           onClick={() => {}}
           className="
           flex px-3 py-2 mx-2 rounded-sm
-          text-gray-400 text-xs 
+          text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
           cursor-pointer
           "
@@ -122,7 +131,7 @@ const ServerOptionsDropdown = () => {
           onClick={() => {}}
           className="
           flex px-3 py-2 mx-2 rounded-sm
-          text-gray-400 text-xs 
+          text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
           cursor-pointer
           "
@@ -130,12 +139,12 @@ const ServerOptionsDropdown = () => {
           Privacy Settings
           <EyeClosedIcon className="h-4 w-4 ml-auto" />
         </DropdownMenuItem>
-        <Separator className="mx-auto w-11/12 bg-discord-black" />
+        <Separator className="mx-auto w-11/12 bg-discord-light dark:bg-discord-black" />
         <DropdownMenuItem
           onClick={() => {}}
           className="
           flex px-3 py-2 mx-2 rounded-sm
-          text-gray-400 text-xs 
+          text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
           cursor-pointer
           "
@@ -143,7 +152,7 @@ const ServerOptionsDropdown = () => {
           Edit Server Profile
           <Pencil1Icon className="h-4 w-4 ml-auto" />
         </DropdownMenuItem>
-        <Separator className="mx-auto w-11/12 bg-discord-black " />
+        <Separator className="mx-auto w-11/12 bg-discord-light dark:bg-discord-black" />
         <DropdownMenuItem
           onClick={() => {}}
           className="
