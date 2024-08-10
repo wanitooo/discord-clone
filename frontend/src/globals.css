@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "GintoNord";
+  font-weight: 700;
+  src: url("fonts/ABCGintoNord-Bold-Trial-BF651b7b7670e10.otf");
+}
+
+@font-face {
+  font-family: "GintoNord";
+  font-weight: 400;
+  src: url("fonts/ABCGintoNord-Regular-Trial-BF651b7b7786b8a.otf");
+}
+
+@font-face {
+  font-family: "ggSans";
+  font-weight: 400;
+  src: url("fonts/gg sans Regular.ttf");
+}
+@font-face {
+  font-family: "ggSans";
+  font-weight: 600;
+  src: url("fonts/gg sans Semibold.ttf");
+}
+
 html,
 body :root {
   height: 100%;
@@ -82,6 +105,42 @@ body :root {
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
+  .landing-bg {
+    /* (x, y) x goes from left to right, y goes from top to bottom*/
+    /* background: #000000;
+    background: radial-gradient(circle at 30% 70%, #06082c, transparent 50%),
+      radial-gradient(circle at 10% 80%, #131555, transparent 70%),
+      radial-gradient(circle at 70% 30%, #131555, transparent 50%),
+      radial-gradient(circle at 40% 80%, #040622, transparent 50%),
+      radial-gradient(circle at 80% 10%, #040622, transparent 50%),
+      radial-gradient(circle at 80% 80%, #03021a, transparent 50%);
+    background-blend-mode: screen; */
+
+    background: url("images/discordbgart.png") no-repeat;
+    background-size: 100%;
+    filter: 10px;
+  }
+
+  .grain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(
+      0,
+      0,
+      0,
+      0.05
+    ); /* Semi-transparent layer for grain effect */
+    background-image: repeating-radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 2px
+    );
+    background-size: 3px 3px; /* Adjust for more or less grain */
+    z-index: -1;
+  }
 }
 
 @layer base {
@@ -90,5 +149,6 @@ body :root {
   }
   body {
     @apply bg-background text-foreground;
+    @apply h-screen w-screen;
   }
 }

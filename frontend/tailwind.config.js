@@ -8,6 +8,10 @@ module.exports = {
     "./src/**/*.{ts,tsx}",
   ],
   theme: {
+    fontFamily: {
+      gintoNord: ["GintoNord", "sans-serif"],
+      ggSans: ["ggSans", "sans-serif"],
+    },
     container: {
       center: true,
       padding: "2rem",
