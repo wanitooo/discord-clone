@@ -150,7 +150,7 @@ const ServerChannels = () => {
         )}
       </div>
 
-      <div className="w-[1215px] h-screen bg-white dark:bg-discord-gray flex flex-col ">
+      <div className="w-full h-screen bg-white dark:bg-discord-gray flex flex-col ">
         <Outlet />
         {/* <ChatInput /> */}
       </div>

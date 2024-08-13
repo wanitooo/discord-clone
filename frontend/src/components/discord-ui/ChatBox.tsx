@@ -7,6 +7,7 @@ import { io, Socket } from "socket.io-client";
 import { ServerToClientEvents, ClientToServerEvents } from "../../typings";
 import ChatInput from "./ChatInput";
 import { useParams } from "@tanstack/react-router";
+import VoiceRooms from "../VoiceRooms";
 
 // please note that the types are reversed
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
@@ -78,12 +79,12 @@ const ChatBox = () => {
       </div>
       {/* <ChatBoxChannel /> */}
 
-      <ScrollArea className="w-full h-full" color="black">
-        <div className="">
+      <ScrollArea className="w-full h-full">
+        <div className="w-full h-full">
           {/* {JSON.stringify(image)} */}
           {/* <img src={image} alt="aws image" /> */}
           {/* {JSON.stringify(chats)} */}
-          <div>
+          <div className="">
             {chats?.map((chat) =>
               chat.channelId == channelId ? (
                 <div
@@ -92,6 +93,7 @@ const ChatBox = () => {
                 dark:hover:bg-discord-black/50 px-4
                dark:text-white 
                 "
+                  key={chat.chat + chat.userId}
                 >
                   {/* {chat} */}
                   CH: {chat.channelId} User {chat.userId}: {chat.chat}{" "}
@@ -102,6 +104,7 @@ const ChatBox = () => {
             )}
           </div>
         </div>
+        <VoiceRooms />
       </ScrollArea>
       <ChatInput channelName={channelId} />
     </>
