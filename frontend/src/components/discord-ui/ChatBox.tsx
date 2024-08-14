@@ -7,7 +7,7 @@ import { io, Socket } from "socket.io-client";
 import { ServerToClientEvents, ClientToServerEvents } from "../../typings";
 import ChatInput from "./ChatInput";
 import { useParams } from "@tanstack/react-router";
-import VoiceRooms from "../VoiceRooms";
+import VoicedChannels from "./VoicedChannels";
 
 // please note that the types are reversed
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
@@ -104,7 +104,7 @@ const ChatBox = () => {
             )}
           </div>
         </div>
-        <VoiceRooms />
+        <VoicedChannels />
       </ScrollArea>
       <ChatInput channelName={channelId} />
     </>

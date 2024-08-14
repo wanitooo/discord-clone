@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { Separator } from "./shadcn/ui";
+import { Separator } from "../shadcn/ui";
 import { Peer } from "peerjs";
+import { usePeers } from "../../hooks/global-store";
 
-const VoiceRooms = () => {
+const VoicedChannels = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [remotePeer, setRemotePeer] = useState("");
   const [currPeerId, setCurrPeerId] = useState("");
   const [peerInstance, setPeerInstance] = useState<Peer>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoRef2 = useRef<HTMLVideoElement>(null);
-
+  const { peerStreams, addPeerStream, removePeer } = usePeers();
   useEffect(() => {
     const a_random_id = Math.random()
       .toString(36)
       .replace(/[^a-z]+/g, "")
       .substr(2, 10);
-    const peer = new Peer(a_random_id);
+    const peer = new Peer(a_random_id); // TODO: change to userID at one point
     setPeerInstance(peer);
     setCurrPeerId(peer.id);
     console.log("peerid:", peer.id);
@@ -26,6 +27,9 @@ const VoiceRooms = () => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
+
+        // console.log("steram ", stream);
+        // console.log("peerstreams", peerStreams);
       })
       .catch((err) => {
         console.error("Failed to get local stream", err);
@@ -51,8 +55,20 @@ const VoiceRooms = () => {
 
     return () => {
       peer.destroy();
+      removePeer(peer.id);
     };
   }, []);
+
+  useEffect(() => {
+    if (!peerInstance) return;
+    if (!mediaStream) return;
+
+    addPeerStream(peerInstance.id, mediaStream);
+
+    return () => {
+      removePeer(peerInstance.id);
+    };
+  }, [mediaStream, peerInstance, addPeerStream, removePeer]);
 
   const call = () => {
     console.log("remote peer set as: ", remotePeer);
@@ -96,4 +112,4 @@ const VoiceRooms = () => {
   );
 };
 
-export default VoiceRooms;
+export default VoicedChannels;

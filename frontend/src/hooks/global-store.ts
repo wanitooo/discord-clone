@@ -1,3 +1,4 @@
+import Peer from "peerjs";
 import { create } from "zustand";
 
 import { persist } from "zustand/middleware";
@@ -31,6 +32,40 @@ export const useTheme = create<ThemeStore>()(
     }),
     {
       name: "theme",
+    }
+  )
+);
+export type PeerStream = {
+  peerId: string;
+  stream: MediaStream;
+};
+export interface PeerStore {
+  peerStreams: PeerStream[];
+  addPeerStream: (peerId: string, stream: MediaStream) => void;
+  removePeer: (id: string) => void;
+}
+
+export const usePeers = create<PeerStore>()(
+  persist(
+    (set) => ({
+      peerStreams: [],
+      addPeerStream: (peerId, stream) =>
+        set((state) => {
+          // console.log("in add peer ", peer);
+          // console.log("in add peer ", stream);
+          return {
+            peerStreams: [...state.peerStreams, { peerId, stream }],
+          };
+        }),
+      removePeer: (id) =>
+        set((state) => ({
+          peerStreams: state.peerStreams.filter(
+            (peerStream) => peerStream.peerId !== id
+          ),
+        })),
+    }),
+    {
+      name: "peers",
     }
   )
 );
