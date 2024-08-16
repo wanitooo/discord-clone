@@ -6,6 +6,7 @@ import {
   channelDetail,
   server,
   serverDetail,
+  voicedChannels,
 } from "./appRoutes/serverRoutes.tsx";
 
 // Create a root route
@@ -30,7 +31,10 @@ function about() {
   return <div>Hello from About!</div>;
 }
 // Create the route tree using your routes
-export const serverRouteTree = serverDetail.addChildren([channelDetail]);
+export const serverRouteTree = serverDetail.addChildren([
+  channelDetail,
+  voicedChannels,
+]);
 export const appRouteTree = appRoute.addChildren([server, serverDetail]);
 const routeTree = rootRoute.addChildren([
   landingRouteTree,

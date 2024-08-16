@@ -16,12 +16,13 @@ import {
   getMessagesSchema,
 } from './dto/chat-dto';
 import { ZodPipe } from 'src/pipes/zod-pipe';
-import { channel } from 'diagnostics_channel';
 import { HttpException, HttpStatus } from '@nestjs/common';
 type MessageDto = {
   userId: string;
   message: string;
 };
+
+// TODO: separate join channel gateway for channel types, text v voiced
 @WebSocketGateway({ cors: true })
 export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private readonly chatsService: ChatsService) {}
@@ -64,15 +65,43 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() getMessage: any,
     @ConnectedSocket() client: Socket,
   ) {
-    const { userId, channelId } = getMessage;
+    let { peerId, channelId, debug = 'from joinChannel' } = getMessage;
+    console.log('~~~~client joined', client.id);
     client.join(`channel-${channelId}`);
-    console.log('user ', userId, ' joined channel ', channelId);
-    // console.log(client.rooms);
+
     this.server.to(`channel-${channelId}`).emit('channelMessages', {
       channelId,
       message: 'joined channel',
+      debug,
+    });
+
+    this.server.to(`channel-${channelId}`).emit('userJoined', { peerId });
+
+    client.on('disconnect', () => {
+      this.server.to(`channel-${channelId}`).emit('userDisconnected', {
+        toDelete: peerId,
+      });
+      console.log('client', client.id, ' disconnect triggered');
     });
   }
+
+  // Kept for reference, may not be needed
+  @SubscribeMessage('getActiveChannelUsers')
+  async getActiveChannelUsers(
+    @MessageBody() getMessage: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const { userId, activeUsers, channelId, debug = '' } = getMessage;
+    client.join(`channel-${channelId}`);
+
+    this.server.to(`channel-${channelId}`).emit('activeChannelUsers', {
+      channelId,
+      activeUsers,
+      message: 'sent from getActiveChannelUsers',
+      debug,
+    });
+  }
+
   @SubscribeMessage('leaveChannel')
   async leaveChannel(
     @MessageBody() getMessage: any,

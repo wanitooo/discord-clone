@@ -3,16 +3,12 @@ import { ScrollArea } from "../shadcn/ui/ScrollArea";
 import { useEffect, useState } from "react";
 import { createPresignedUrlWithClient } from "../../s3";
 
-import { io, Socket } from "socket.io-client";
-import { ServerToClientEvents, ClientToServerEvents } from "../../typings";
+import socket from "../../socket";
 import ChatInput from "./ChatInput";
 import { useParams } from "@tanstack/react-router";
 import VoicedChannels from "./VoicedChannels";
+import { usePeers } from "../../hooks/global-store";
 
-// please note that the types are reversed
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  "http://localhost:3000"
-);
 // TODO: get type interface from a lib folder of types -> zod
 // - append to the current list of chats, instead of getting all the rows -> chat service + chat box set state
 // - change userId 21 to actual user id, get from cookies
@@ -30,6 +26,7 @@ const ChatBox = () => {
 
   let { channelId }: { channelId: string } = useParams();
   channelId = parseInt(channelId);
+  const { peerStreams } = usePeers();
 
   useEffect(() => {
     const fetchImageUrl = async () => {
@@ -44,7 +41,11 @@ const ChatBox = () => {
   useEffect(() => {
     // console.log("channel ID", channelId);
 
-    socket.emit("joinChannel", { userId: 21, channelId: channelId });
+    socket.emit("joinChannel", {
+      userId: 21,
+      channelId: channelId,
+      activeUsers: peerStreams,
+    });
     socket.emit("channelMessages", {
       userId: 21,
       channelId: channelId,
@@ -85,18 +86,18 @@ const ChatBox = () => {
           {/* <img src={image} alt="aws image" /> */}
           {/* {JSON.stringify(chats)} */}
           <div className="">
-            {chats?.map((chat) =>
-              chat.channelId == channelId ? (
+            {chats?.map((c) =>
+              c.channelId == channelId ? (
                 <div
                   className=" text-discord-gray 
                 hover:bg-discord-black/25
                 dark:hover:bg-discord-black/50 px-4
                dark:text-white 
                 "
-                  key={chat.chat + chat.userId}
+                  key={Math.random()}
                 >
                   {/* {chat} */}
-                  CH: {chat.channelId} User {chat.userId}: {chat.chat}{" "}
+                  CH: {c.channelId} User {c.userId}: {c.chat}{" "}
                 </div>
               ) : (
                 ""

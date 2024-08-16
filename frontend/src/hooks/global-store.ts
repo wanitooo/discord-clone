@@ -42,30 +42,39 @@ export type PeerStream = {
 export interface PeerStore {
   peerStreams: PeerStream[];
   addPeerStream: (peerId: string, stream: MediaStream) => void;
-  removePeer: (id: string) => void;
+  removePeerStream: (id: string) => void;
+  clearPeerStreams: () => void;
+  setPeerStream: (peerStreams: PeerStream[]) => void;
 }
 
-export const usePeers = create<PeerStore>()(
-  persist(
-    (set) => ({
-      peerStreams: [],
-      addPeerStream: (peerId, stream) =>
-        set((state) => {
-          // console.log("in add peer ", peer);
-          // console.log("in add peer ", stream);
-          return {
-            peerStreams: [...state.peerStreams, { peerId, stream }],
-          };
-        }),
-      removePeer: (id) =>
-        set((state) => ({
-          peerStreams: state.peerStreams.filter(
-            (peerStream) => peerStream.peerId !== id
-          ),
-        })),
+export const usePeers = create<PeerStore>()((set) => ({
+  peerStreams: [],
+  setPeerStream: (peerStreams) =>
+    set(() => ({
+      peerStreams,
+    })),
+  addPeerStream: (peerId, stream) =>
+    set((state) => {
+      // console.log("in add peer ", peerId);
+      // console.log("in add peer ", stream);
+      const exists = state.peerStreams.some(
+        (peerStream) => peerStream.peerId == peerId
+      );
+      if (!exists) {
+        return {
+          peerStreams: [...state.peerStreams, { peerId, stream }],
+        };
+      }
+      return state;
     }),
-    {
-      name: "peers",
-    }
-  )
-);
+  removePeerStream: (id) =>
+    set((state) => ({
+      peerStreams: state.peerStreams.filter(
+        (peerStream) => peerStream.peerId !== id
+      ),
+    })),
+  clearPeerStreams: () =>
+    set(() => ({
+      peerStreams: [],
+    })),
+}));

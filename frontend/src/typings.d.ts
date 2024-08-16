@@ -6,7 +6,12 @@ export interface ServerToClientEvents {
 
 interface ClientToServerEvents {
   hello: () => void;
-  joinChannel: (data: { userId: number; channelId: number }) => void;
+  joinChannel: (data: {
+    userId: number;
+    channelId: number;
+    debug?: string;
+    peerId: string;
+  }) => void;
 }
 
 interface InterServerEvents {
