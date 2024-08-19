@@ -1,8 +1,7 @@
 import { Route } from "@tanstack/react-router";
 import { appRoute } from "../router";
 import ServerChannels from "../../components/layouts/ServerChannels";
-import ChatBox from "../../components/discord-ui/ChatBox";
-import VoicedChannels from "../../components/discord-ui/VoicedChannels";
+import Channel from "../../components/discord-ui/Channel";
 
 export const server = new Route({
   getParentRoute: () => appRoute,
@@ -21,14 +20,14 @@ export const channelDetail = new Route({
   getParentRoute: () => serverDetail,
   path: "/$channelId",
   parseParams: (params) => params.channelId as string,
-  component: () => <ChatBox />,
+  component: () => <Channel />,
 });
 
-export const voicedChannels = new Route({
-  getParentRoute: () => serverDetail,
-  path: "/$channelId/voiced",
-  parseParams: (params) => params.channelId as string,
-  component: () => <VoicedChannels />,
-});
+// export const voicedChannels = new Route({
+//   getParentRoute: () => serverDetail,
+//   path: "/$channelId/voiced",
+//   parseParams: (params) => params.channelId as string,
+//   component: () => <VoicedChannels />,
+// });
 // Cant do this somehow, uncaught error, approute is called before being defined
 // export const serverRoutes = appRoute.addChildren([server, serverDetail]);

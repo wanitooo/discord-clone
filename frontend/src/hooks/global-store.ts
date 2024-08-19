@@ -1,3 +1,4 @@
+import { Channel } from "diagnostics_channel";
 import Peer from "peerjs";
 import { create } from "zustand";
 
@@ -77,4 +78,17 @@ export const usePeers = create<PeerStore>()((set) => ({
     set(() => ({
       peerStreams: [],
     })),
+}));
+export interface ChannelStore {
+  activeChannelType: string;
+  setActiveChannelType: (type: string) => void;
+  activeChannel: string;
+  setActiveChannel: (type: string) => void;
+}
+
+export const useChannels = create<ChannelStore>((set) => ({
+  activeChannelType: "text",
+  setActiveChannelType: (type) => set(() => ({ activeChannelType: type })),
+  activeChannel: "text",
+  setActiveChannel: (channelId) => set(() => ({ activeChannel: channelId })),
 }));

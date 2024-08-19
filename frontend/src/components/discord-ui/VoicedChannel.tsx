@@ -1,19 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { Separator } from "../shadcn/ui";
 import { Peer } from "peerjs";
-import { PeerStream, usePeers } from "../../hooks/global-store";
+import { PeerStream, useChannels, usePeers } from "../../hooks/global-store";
 import socket from "../../socket";
 import { useParams } from "@tanstack/react-router";
 import VideoPlayer from "./VideoPlayer";
+import { cn } from "../shadcn/utils/utils";
 
-// TODO: Render video streams - 20 min in C&B
-const VoicedChannels = () => {
+const VoicedChannel = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [remotePeer, setRemotePeer] = useState("");
   const [peerInstance, setPeerInstance] = useState<Peer>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoRef2 = useRef<HTMLVideoElement>(null);
   const [remoteVideoRefs, setRemoteVideoRefs] = useState(null);
+  const { activeChannel } = useChannels();
 
   const {
     peerStreams,
@@ -100,29 +101,38 @@ const VoicedChannels = () => {
     console.log("peerstreams", peerStreams);
   }, [peerStreams]);
 
-  return (
-    <div>
-      <Separator className="bg-white h-2" />
-      Welcome to # INSERT VOICE CHANNEL HERE {peerInstance?.id}
-      <div className="w-full h-[900px]">
-        <Separator className="bg-white h-2" />
-        <h1>Local Stream</h1>
+  const videoPlayerClasses = cn(
+    peerStreams?.length >= 1 ? "w-full gap-4 h-auto" : "w-1/2"
+  );
 
+  return (
+    <div className="bg-black w-full h-full overflow-clip">
+      <Separator className="bg-white h-2" />
+      Welcome to # {activeChannel.channelName}, peer: {peerInstance?.id}
+      <div
+        className={cn(
+          "grid mx-16 w-full pt-36",
+          peerStreams?.length >= 1
+            ? "grid-cols-2 justify-items-center"
+            : "grid-cols-1 justify-items-center"
+        )}
+      >
         <VideoPlayer
           mediaStream={mediaStream}
           key={Math.random()}
-          className="w-1/4"
+          className={videoPlayerClasses}
         />
-        <h1>Remote Stream</h1>
 
-        <div className="w-full h-full grid grid-cols-4 gap-9">
-          {Object.values(peerStreams as PeerStream[]).map((peerStream) => (
-            <VideoPlayer mediaStream={peerStream.stream} key={Math.random()} />
-          ))}
-        </div>
+        {Object.values(peerStreams as PeerStream[]).map((peerStream) => (
+          <VideoPlayer
+            mediaStream={peerStream.stream}
+            key={Math.random()}
+            className={videoPlayerClasses}
+          />
+        ))}
       </div>
     </div>
   );
 };
 
-export default VoicedChannels;
+export default VoicedChannel;

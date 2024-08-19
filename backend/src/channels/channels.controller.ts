@@ -59,7 +59,7 @@ export class ChannelsController {
   ) {
     const channel = this.channelsService.findAChannelInServer(
       +serverId,
-      channelId,
+      +channelId,
     );
     if (!channel) {
       return { message: 'No channel found' };

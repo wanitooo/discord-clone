@@ -19,7 +19,7 @@ import { Link } from "@tanstack/react-router";
 import IconTooltip from "../discord-ui/IconTooltip";
 import { useQuery } from "@tanstack/react-query";
 import ChatInput from "../discord-ui/ChatInput";
-import { useModal } from "../../hooks/global-store";
+import { useChannels, useModal } from "../../hooks/global-store";
 import { cn } from "../shadcn/utils/utils";
 
 const fetchChannels = async (serverId: number) => {
@@ -35,9 +35,10 @@ const fetchChannels = async (serverId: number) => {
 };
 
 const ServerChannels = () => {
-  const { serverId }: { serverId: number } = useParams({ from: "/app/server" });
+  const { serverId }: { serverId: number } = useParams({ from: "/app" });
   const { onOpen } = useModal();
   const [collapsed, setCollapsed] = useState(false);
+  const { activeChannel } = useChannels();
 
   const [channels, setChannels] = useState([]);
   const channelsQuery = useQuery({
@@ -108,13 +109,13 @@ const ServerChannels = () => {
                       params={{ serverId: "0" }}
                     >
                       <div
-                        className="w-11/12 flex items-center justify-between 
-                      px-2 py-1 ml-1
-                      text-sm 
-                      hover:bg-discord-light
-                      hover:text-discord-blackest
-                      dark:hover:text-white
-                      dark:hover:bg-discord-gray hover:rounded-sm"
+                        className={cn(
+                          "w-11/12 flex items-center justify-between px-2 py-1 ml-1 text-sm ",
+                          "hover:bg-discord-light hover:text-discord-blackest dark:hover:text-white dark:hover:bg-discord-gray hover:rounded-sm",
+                          activeChannel.channelId === channel.channelId
+                            ? "bg-discord-light dark:bg-discord-gray text-discord-blackest dark:text-white rounded-sm"
+                            : ""
+                        )}
                       >
                         <div className="flex items-center justify-center">
                           <HashtagIcon width={15} className="mr-2" />
