@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Separator } from "../shadcn/ui";
+import { ScrollArea, Separator } from "../shadcn/ui";
 import { Peer } from "peerjs";
 import { PeerStream, useChannels, usePeers } from "../../hooks/global-store";
 import socket from "../../socket";
@@ -7,6 +7,7 @@ import { useParams } from "@tanstack/react-router";
 import VideoPlayer from "./VideoPlayer";
 import { cn } from "../shadcn/utils/utils";
 
+// TODO: Fix not able to scroll with group hover
 const VoicedChannel = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [remotePeer, setRemotePeer] = useState("");
@@ -37,6 +38,7 @@ const VoicedChannel = () => {
     console.log("peerid:", peer.id);
 
     navigator.mediaDevices
+      // implementation lags like hell if you force a 16:9 aspect ratio
       .getUserMedia({ video: true, audio: false })
       .then((stream) => {
         setMediaStream(stream);
@@ -102,27 +104,33 @@ const VoicedChannel = () => {
   }, [peerStreams]);
 
   const videoPlayerClasses = cn(
-    peerStreams?.length >= 1 ? "w-full gap-4 h-auto" : "w-1/2"
+    "grow-1 shrink-1 basis-1/2 max-w-[45%] max-h-[45%]"
   );
 
   return (
-    <div className="bg-black w-full h-full overflow-clip">
-      <Separator className="bg-white h-2" />
-      Welcome to # {activeChannel.channelName}, peer: {peerInstance?.id}
+    <ScrollArea className="bg-black w-full h-full flex flex-row p-16 ">
+      {/* On hover hud */}
+      <div className="absolute top-4 left-0 right-0 w-full h-full z-20 text-white opacity-0 hover:opacity-100 transition-all group ease-in-out duration-500">
+        <div className="-translate-y-2 group-hover:translate-y-2 transition-all text-2xl font-ggSans font-normal scale-y-[85%] group-hover:scale-y-100 px-6 duration-300">
+          # {activeChannel.channelName} | peer: {peerInstance?.id}
+        </div>
+        <div className="absolute bottom-4 left-0 right-0 w-full z-30 bg-white text-black group-hover:">
+          Voice call controls
+        </div>
+      </div>
+
       <div
         className={cn(
-          "grid mx-16 w-full pt-36",
-          peerStreams?.length >= 1
-            ? "grid-cols-2 justify-items-center"
-            : "grid-cols-1 justify-items-center"
+          "flex flex-wrap w-full h-full items-center align-middle justify-center gap-2"
         )}
       >
+        {/* 
+        <Separator className="bg-white h-2" /> */}
         <VideoPlayer
           mediaStream={mediaStream}
           key={Math.random()}
           className={videoPlayerClasses}
         />
-
         {Object.values(peerStreams as PeerStream[]).map((peerStream) => (
           <VideoPlayer
             mediaStream={peerStream.stream}
@@ -131,7 +139,7 @@ const VoicedChannel = () => {
           />
         ))}
       </div>
-    </div>
+    </ScrollArea>
   );
 };
 
