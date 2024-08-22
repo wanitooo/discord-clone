@@ -104,24 +104,26 @@ const VoicedChannel = () => {
   }, [peerStreams]);
 
   const videoPlayerClasses = cn(
-    "grow-1 shrink-1 basis-1/2 max-w-[45%] max-h-[45%]"
+    "grow-1 shrink-1 max-w-[45%] max-h-[45%]",
+    peerStreams.length >= 2 ? "basis-1/3" : "basis-1/2"
   );
 
   return (
-    <ScrollArea className="bg-black w-full h-full flex flex-row p-16 ">
+    <ScrollArea className="bg-black w-full h-full flex flex-row group">
       {/* On hover hud */}
-      <div className="absolute top-4 left-0 right-0 w-full h-full z-20 text-white opacity-0 hover:opacity-100 transition-all group ease-in-out duration-500">
-        <div className="-translate-y-2 group-hover:translate-y-2 transition-all text-2xl font-ggSans font-normal scale-y-[85%] group-hover:scale-y-100 px-6 duration-300">
+      <div className="absolute top-4 left-0 right-0 w-full h-full text-white  transition-all ease-in-out duration-500 ">
+        <div className="-translate-y-2 group-hover:translate-y-2 opacity-0 group-hover:opacity-100 text-2xl font-ggSans font-normal scale-y-[85%] group-hover:scale-y-100 px-6 duration-300 transition-all">
           # {activeChannel.channelName} | peer: {peerInstance?.id}
         </div>
-        <div className="absolute bottom-4 left-0 right-0 w-full z-30 bg-white text-black group-hover:">
+
+        <div className="absolute bottom-4 left-0 right-0 w-full bg-white text-black opacity-0 group-hover:opacity-100 duration-300 transition-all">
           Voice call controls
         </div>
       </div>
 
       <div
         className={cn(
-          "flex flex-wrap w-full h-full items-center align-middle justify-center gap-2"
+          "flex flex-wrap w-full h-full items-center align-middle justify-center gap-2 pt-16"
         )}
       >
         {/* 
