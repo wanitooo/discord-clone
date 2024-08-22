@@ -6,7 +6,7 @@ import { createPresignedUrlWithClient } from "../../s3";
 import socket from "../../socket";
 import ChatInput from "./ChatInput";
 import { useParams } from "@tanstack/react-router";
-import VoicedChannels from "./VoicedChannels";
+import VoicedChannels from "./VoicedChannel";
 import { usePeers } from "../../hooks/global-store";
 
 // TODO: get type interface from a lib folder of types -> zod
@@ -105,7 +105,7 @@ const ChatBox = () => {
             )}
           </div>
         </div>
-        <VoicedChannels />
+        {/* <VoicedChannels /> */}
       </ScrollArea>
       <ChatInput channelName={channelId} />
     </>

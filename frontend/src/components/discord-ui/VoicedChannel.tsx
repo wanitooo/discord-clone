@@ -1,19 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { Separator } from "../shadcn/ui";
+import { ScrollArea, Separator } from "../shadcn/ui";
 import { Peer } from "peerjs";
-import { PeerStream, usePeers } from "../../hooks/global-store";
+import { PeerStream, useChannels, usePeers } from "../../hooks/global-store";
 import socket from "../../socket";
 import { useParams } from "@tanstack/react-router";
 import VideoPlayer from "./VideoPlayer";
+import { cn } from "../shadcn/utils/utils";
 
-// TODO: Render video streams - 20 min in C&B
-const VoicedChannels = () => {
+// TODO: Fix not able to scroll with group hover
+const VoicedChannel = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [remotePeer, setRemotePeer] = useState("");
   const [peerInstance, setPeerInstance] = useState<Peer>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoRef2 = useRef<HTMLVideoElement>(null);
   const [remoteVideoRefs, setRemoteVideoRefs] = useState(null);
+  const { activeChannel } = useChannels();
 
   const {
     peerStreams,
@@ -36,6 +38,7 @@ const VoicedChannels = () => {
     console.log("peerid:", peer.id);
 
     navigator.mediaDevices
+      // implementation lags like hell if you force a 16:9 aspect ratio
       .getUserMedia({ video: true, audio: false })
       .then((stream) => {
         setMediaStream(stream);
@@ -100,29 +103,46 @@ const VoicedChannels = () => {
     console.log("peerstreams", peerStreams);
   }, [peerStreams]);
 
-  return (
-    <div>
-      <Separator className="bg-white h-2" />
-      Welcome to # INSERT VOICE CHANNEL HERE {peerInstance?.id}
-      <div className="w-full h-[900px]">
-        <Separator className="bg-white h-2" />
-        <h1>Local Stream</h1>
+  const videoPlayerClasses = cn(
+    "grow-1 shrink-1 max-w-[45%] max-h-[45%]",
+    peerStreams.length >= 2 ? "basis-1/3" : "basis-1/2"
+  );
 
+  return (
+    <ScrollArea className="bg-black w-full h-full flex flex-row group">
+      {/* On hover hud */}
+      <div className="absolute top-4 left-0 right-0 w-full h-full text-white  transition-all ease-in-out duration-500 ">
+        <div className="-translate-y-2 group-hover:translate-y-2 opacity-0 group-hover:opacity-100 text-2xl font-ggSans font-normal scale-y-[85%] group-hover:scale-y-100 px-6 duration-300 transition-all">
+          # {activeChannel.channelName} | peer: {peerInstance?.id}
+        </div>
+
+        <div className="absolute bottom-4 left-0 right-0 w-full bg-white text-black opacity-0 group-hover:opacity-100 duration-300 transition-all">
+          Voice call controls
+        </div>
+      </div>
+
+      <div
+        className={cn(
+          "flex flex-wrap w-full h-full items-center align-middle justify-center gap-2 pt-16"
+        )}
+      >
+        {/* 
+        <Separator className="bg-white h-2" /> */}
         <VideoPlayer
           mediaStream={mediaStream}
           key={Math.random()}
-          className="w-1/4"
+          className={videoPlayerClasses}
         />
-        <h1>Remote Stream</h1>
-
-        <div className="w-full h-full grid grid-cols-4 gap-9">
-          {Object.values(peerStreams as PeerStream[]).map((peerStream) => (
-            <VideoPlayer mediaStream={peerStream.stream} key={Math.random()} />
-          ))}
-        </div>
+        {Object.values(peerStreams as PeerStream[]).map((peerStream) => (
+          <VideoPlayer
+            mediaStream={peerStream.stream}
+            key={Math.random()}
+            className={videoPlayerClasses}
+          />
+        ))}
       </div>
-    </div>
+    </ScrollArea>
   );
 };
 
-export default VoicedChannels;
+export default VoicedChannel;

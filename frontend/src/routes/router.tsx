@@ -31,10 +31,7 @@ function about() {
   return <div>Hello from About!</div>;
 }
 // Create the route tree using your routes
-export const serverRouteTree = serverDetail.addChildren([
-  channelDetail,
-  voicedChannels,
-]);
+export const serverRouteTree = serverDetail.addChildren([channelDetail]);
 export const appRouteTree = appRoute.addChildren([server, serverDetail]);
 const routeTree = rootRoute.addChildren([
   landingRouteTree,

@@ -88,7 +88,7 @@ export class ChannelsService {
       .where(eq(channels.serverId, id));
   }
 
-  findAChannelInServer(serverId: number, channelId: string) {
+  findAChannelInServer(serverId: number, channelId: number) {
     return this.db
       .select({
         channelName: channels.name,
@@ -102,8 +102,8 @@ export class ChannelsService {
       .from(channels)
       .orderBy(asc(channels.createdAt))
       .where(
-        // and(eq(channels.serverId, serverId), eq(channels.id, channelId)),
-        and(eq(channels.serverId, serverId), eq(channels.uuid, channelId)),
+        and(eq(channels.serverId, serverId), eq(channels.id, channelId)),
+        // and(eq(channels.serverId, serverId), eq(channels.uuid, channelId)),
       );
   }
 
