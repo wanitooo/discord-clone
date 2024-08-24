@@ -14,12 +14,8 @@ export const createMessageSchema = createInsertSchema(messages, {
       message: 'Chat must not be empty',
     }),
   edited: z.boolean().default(false),
-  channelId: z.number({
-    required_error: 'Channel id is required',
-  }),
 }).required({
   userId: true,
-  channelId: true,
   chat: true,
 });
 
@@ -33,15 +29,18 @@ export const getMessagesSchema = createSelectSchema(messages, {
   userId: z.number({
     required_error: 'User id is required',
   }),
-  channelId: z.number({
-    required_error: 'Channel id is required',
-  }),
 }).required({
   userId: true,
-  channelId: true,
 });
 // TODO: Delete chat schema
+const UUIDParamsSchema = z.object({
+  serverUUID: z.string().uuid({ message: 'serverUUID is required' }),
+  channelUUID: z.string().uuid({ message: 'channelUUID is required' }),
+});
 
-export type CreateMessageDto = z.infer<typeof createMessageSchema>;
-export type GetMessagesDto = z.infer<typeof getMessagesSchema>;
+const createMessageWithUUIDSchema = createMessageSchema.merge(UUIDParamsSchema);
+const getMessageWithUUIDSchema = getMessagesSchema.merge(UUIDParamsSchema);
+
+export type CreateMessageDto = z.infer<typeof createMessageWithUUIDSchema>;
+export type GetMessagesDto = z.infer<typeof getMessageWithUUIDSchema>;
 export type UpdateMessageDto = typeof updateMessageSchema;

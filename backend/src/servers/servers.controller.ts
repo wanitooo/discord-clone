@@ -75,9 +75,14 @@ export class ServersController {
     return servers;
   }
 
-  @Get(':id')
+  @Get('/id/:id')
   findOne(@Param('id') id: string) {
     return this.serversService.findOne(+id);
+  }
+
+  @Get('/uuid/:uuid')
+  findByUUID(@Param('uuid') uuid: string) {
+    return this.serversService.findByUUID(uuid);
   }
 
   @Patch(':uuid')

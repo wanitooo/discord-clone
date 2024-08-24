@@ -39,13 +39,14 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     try {
+      // console.log('received in controller ', chat);
       await this.chatsService.create(chat);
     } catch (error) {
       // console.log(error);
       throw new HttpException('Failed to send message', HttpStatus.BAD_REQUEST);
     }
     this.server
-      .to(`channel-${chat.channelId}`)
+      .to(`channel-${chat.channelUUID}`)
       .emit('newMessageEvent', 'new chat was created should update');
   }
 
@@ -65,22 +66,23 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() getMessage: any,
     @ConnectedSocket() client: Socket,
   ) {
-    let { peerId, channelId, debug = 'from joinChannel' } = getMessage;
+    let { peerId, channelUUID, debug = 'from joinChannel' } = getMessage;
     console.log('~~~~client joined', client.id);
-    client.join(`channel-${channelId}`);
+    client.join(`channel-${channelUUID}`);
 
-    this.server.to(`channel-${channelId}`).emit('channelMessages', {
-      channelId,
+    this.server.to(`channel-${channelUUID}`).emit('channelMessages', {
+      channelUUID,
       message: 'joined channel',
       debug,
     });
 
-    this.server.to(`channel-${channelId}`).emit('userJoined', { peerId });
+    this.server.to(`channel-${channelUUID}`).emit('userJoined', { peerId });
 
     client.on('disconnect', () => {
-      this.server.to(`channel-${channelId}`).emit('userDisconnected', {
+      this.server.to(`channel-${channelUUID}`).emit('userDisconnected', {
         toDelete: peerId,
       });
+      client.disconnect();
       console.log('client', client.id, ' disconnect triggered');
     });
   }
@@ -91,11 +93,17 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() getMessage: any,
     @ConnectedSocket() client: Socket,
   ) {
-    const { userId, activeUsers, channelId, debug = '' } = getMessage;
-    client.join(`channel-${channelId}`);
+    const {
+      userId,
+      activeUsers,
+      channelUUID,
+      serverUUID,
+      debug = '',
+    } = getMessage;
+    client.join(`channel-${channelUUID}`);
 
-    this.server.to(`channel-${channelId}`).emit('activeChannelUsers', {
-      channelId,
+    this.server.to(`channel-${channelUUID}`).emit('activeChannelUsers', {
+      channelUUID,
       activeUsers,
       message: 'sent from getActiveChannelUsers',
       debug,
@@ -107,12 +115,12 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() getMessage: any,
     @ConnectedSocket() client: Socket,
   ) {
-    const { channelId } = getMessage;
-    client.leave(`channel-${channelId}`);
-    // console.log('Joined channel ', channelId);
+    const { channelUUID } = getMessage;
+    client.leave(`channel-${channelUUID}`);
+    // console.log('Joined channel ', channelUUID);
     // console.log(client.rooms);
-    this.server.to(`channel-${channelId}`).emit('channelMessages', {
-      channelId,
+    this.server.to(`channel-${channelUUID}`).emit('channelMessages', {
+      channelUUID,
       message: 'left channel',
     });
   }
@@ -128,7 +136,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // console.log(client.rooms);
 
     this.server
-      .to(`channel-${message.channelId}`)
+      .to(`channel-${message.channelUUID}`)
       .emit('channelMessages', { messages });
   }
 }

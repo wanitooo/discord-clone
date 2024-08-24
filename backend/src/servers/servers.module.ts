@@ -8,5 +8,6 @@ import { UploadModule } from 'src/upload/upload.module';
   imports: [UploadModule],
   controllers: [ServersController],
   providers: [ServersService],
+  exports: [ServersService],
 })
 export class ServersModule {}

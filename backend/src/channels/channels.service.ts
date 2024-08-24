@@ -6,20 +6,27 @@ import { channels } from 'src/nest-drizzle/discordSchema';
 import { InferInsertModel, and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { PgColumn, PgDate, PgUUID, date } from 'drizzle-orm/pg-core';
 import { isUndefined } from 'src/utils';
+import { ServersService } from 'src/servers/servers.service';
 
 @Injectable()
 export class ChannelsService {
-  constructor(@Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb) {}
+  constructor(
+    @Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb,
+    private readonly serversService: ServersService,
+  ) {}
 
-  create(CreateChannelDto: CreateChannelDto) {
-    const { name, serverId, type, mode } = CreateChannelDto;
-    console.log('~~~creating channel:', name, serverId, type, mode);
+  async create(createChannelDto: CreateChannelDto) {
+    const { name, serverUUID, type, mode } = createChannelDto;
+    console.log('~~~creating channel:', name, serverUUID, type, mode);
+
+    const chs = await this.serversService.findByUUID(serverUUID);
+
     const result = this.db.transaction(async (tx) => {
       const ins = await tx
         .insert(channels)
         .values({
           name,
-          serverId,
+          serverId: chs[0].id,
           type,
           mode,
         })
@@ -72,7 +79,9 @@ export class ChannelsService {
       .orderBy(asc(channels.createdAt));
   }
 
-  findAllChannelsInServer(id: number) {
+  async findAllChannelsInServer(uuid: string) {
+    const chs = await this.serversService.findByUUID(uuid);
+    // console.log('chs ', chs[0]);
     return this.db
       .select({
         channelName: channels.name,
@@ -85,11 +94,14 @@ export class ChannelsService {
       })
       .from(channels)
       .orderBy(asc(channels.createdAt))
-      .where(eq(channels.serverId, id));
+      .where(eq(channels.serverId, chs[0].id));
   }
 
-  findAChannelInServer(serverId: number, channelId: number) {
-    return this.db
+  async findAChannelInServer(serverUUID: string, channelUUID: string) {
+    // console.log('REV IN CHANNELS SERVICE', serverUUID, channelUUID);
+    const chs = await this.serversService.findByUUID(serverUUID);
+    const serverId = chs[0].id;
+    const [channel] = await this.db
       .select({
         channelName: channels.name,
         channelId: channels.id,
@@ -102,9 +114,10 @@ export class ChannelsService {
       .from(channels)
       .orderBy(asc(channels.createdAt))
       .where(
-        and(eq(channels.serverId, serverId), eq(channels.id, channelId)),
+        and(eq(channels.serverId, serverId), eq(channels.uuid, channelUUID)),
         // and(eq(channels.serverId, serverId), eq(channels.uuid, channelId)),
       );
+    return channel;
   }
 
   // findOne(id: number) {

@@ -25,7 +25,6 @@ export const insertChannelSchema = createInsertSchema(channels, {
   }),
 }).required({
   name: true,
-  serverId: true,
   type: true,
   mode: true,
 });
@@ -35,5 +34,12 @@ export const updateChannelSchema = createInsertSchema(channels, {
   updatedAt: z.date().optional(),
 });
 
-export type CreateChannelDto = z.infer<typeof insertChannelSchema>;
+const UUIDParamsSchema = z.object({
+  serverUUID: z.string().uuid({ message: 'serverUUID is required' }),
+  channelUUID: z.string().uuid({ message: 'channelUUID is required' }),
+});
+
+const createWithUUIDSchema = insertChannelSchema.merge(UUIDParamsSchema);
+
+export type CreateChannelDto = z.infer<typeof createWithUUIDSchema>;
 export type UpdateChannelDto = z.infer<typeof updateChannelSchema>;

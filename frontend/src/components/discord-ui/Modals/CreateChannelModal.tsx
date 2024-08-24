@@ -41,7 +41,7 @@ const createChannel = async (
   name: string,
   channelType: string,
   isPrivate: boolean,
-  serverId: number | undefined
+  serverUUID: string
 ) => {
   const data = await fetch(`http://127.0.0.1:3000/api/channels`, {
     method: "POST",
@@ -52,7 +52,7 @@ const createChannel = async (
     },
     body: JSON.stringify({
       name,
-      serverId,
+      serverUUID,
       type: channelType,
       mode: isPrivate ? "private" : "public",
     }),
@@ -72,19 +72,14 @@ const createChannel = async (
 // Add icons in general
 // Polish alignments
 export const CreateChannelModal = () => {
-  const { serverId } = useParams();
+  const { serverUUID } = useParams({ from: "/app" });
   // console.log("serverid", serverId);
   const createChannelQuery = useQuery({
-    queryKey: ["createChannelQuery", serverId],
+    queryKey: ["createChannelQuery", serverUUID],
     queryFn: async () => {
       const { name, channelType, isPrivate } = form.getValues();
       // console.log("name", name, "image ", image[0] ? image[0] : null);
-      return await createChannel(
-        name,
-        channelType,
-        isPrivate,
-        parseInt(serverId)
-      );
+      return await createChannel(name, channelType, isPrivate, serverUUID);
     },
     enabled: false,
   });

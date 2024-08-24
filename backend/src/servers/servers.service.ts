@@ -102,6 +102,21 @@ export class ServersService {
       .orderBy(asc(servers.createdAt));
   }
 
+  findByUUID(uuid: string) {
+    return this.db
+      .select({
+        name: servers.name,
+        id: servers.id,
+        uuid: servers.uuid,
+        image: servers.image,
+        serverOwner: servers.serverOwner,
+        createdAt: servers.createdAt,
+      })
+      .from(servers)
+      .where(eq(servers.uuid, uuid))
+      .orderBy(asc(servers.createdAt));
+  }
+
   update(uuid: string, updateServerDto: UpdateServerDto) {
     // console.log('UUID', uuid);
 

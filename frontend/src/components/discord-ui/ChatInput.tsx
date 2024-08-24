@@ -29,13 +29,17 @@ const ChatInput = ({ channelName = " " }) => {
     },
   });
 
-  const { channelId }: { channelId: string } = useParams();
+  const {
+    channelUUID,
+    serverUUID,
+  }: { channelUUID: string; serverUUID: string } = useParams({ from: "/app" });
   const onSubmit = (data) => {
     // console.log("TEST", );
     socket.emit("sendMessage", {
       userId: 1,
       chat: data.chat,
-      channelId: parseInt(channelId),
+      channelUUID: channelUUID,
+      serverUUID: serverUUID,
     });
     chatInputForm.reset();
   };
@@ -65,7 +69,7 @@ const ChatInput = ({ channelName = " " }) => {
                     name="chat input"
                     className="bg-discord-lighter text-black dark:text-white dark:bg-[#383a40] pl-12 mb-2
                     border-none outline-0 border-0 focus-visble:ring-1"
-                    placeholder={`Message #${channelName}`}
+                    placeholder={`Message # ${channelName}`}
                     {...field}
                   />
                 </div>

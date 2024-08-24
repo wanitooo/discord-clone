@@ -7,7 +7,7 @@ import socket from "../../socket";
 import ChatInput from "./ChatInput";
 import { useParams } from "@tanstack/react-router";
 import VoicedChannels from "./VoicedChannel";
-import { usePeers } from "../../hooks/global-store";
+import { useChannels, usePeers } from "../../hooks/global-store";
 
 // TODO: get type interface from a lib folder of types -> zod
 // - append to the current list of chats, instead of getting all the rows -> chat service + chat box set state
@@ -20,12 +20,11 @@ interface Chat {
 }
 
 const ChatBox = () => {
-  const [image, setImage] = useState("");
   const [chats, setChats] = useState<Chat[] | undefined>();
-  const [updateChat, setUpdateChat] = useState<boolean>(false);
-
-  let { channelId }: { channelId: string } = useParams();
-  channelId = parseInt(channelId);
+  const { activeChannel } = useChannels();
+  let { channelUUID, serverUUID }: { channelUUID: string; serverUUID: string } =
+    useParams({ from: "/app" });
+  // channelId = parseInt(channelId);
   const { peerStreams } = usePeers();
 
   useEffect(() => {
@@ -43,14 +42,15 @@ const ChatBox = () => {
 
     socket.emit("joinChannel", {
       userId: 21,
-      channelId: channelId,
+      channelUUID,
       activeUsers: peerStreams,
     });
     socket.emit("channelMessages", {
       userId: 21,
-      channelId: channelId,
+      channelUUID,
+      serverUUID,
     });
-  }, [channelId]);
+  }, [channelUUID]);
 
   socket.on("channelMessages", (data) => {
     setChats(data.messages); // retrieves channel messages
@@ -62,7 +62,8 @@ const ChatBox = () => {
 
     socket.emit("channelMessages", {
       userId: 21,
-      channelId: channelId,
+      serverUUID,
+      channelUUID,
     });
   });
   // console.log("chats?.channelId == channelId", chats[0]?.channelId);
@@ -86,28 +87,24 @@ const ChatBox = () => {
           {/* <img src={image} alt="aws image" /> */}
           {/* {JSON.stringify(chats)} */}
           <div className="">
-            {chats?.map((c) =>
-              c.channelId == channelId ? (
-                <div
-                  className=" text-discord-gray 
+            {chats?.map((c) => (
+              <div
+                className=" text-discord-gray 
                 hover:bg-discord-black/25
                 dark:hover:bg-discord-black/50 px-4
                dark:text-white 
                 "
-                  key={Math.random()}
-                >
-                  {/* {chat} */}
-                  CH: {c.channelId} User {c.userId}: {c.chat}{" "}
-                </div>
-              ) : (
-                ""
-              )
-            )}
+                key={Math.random()}
+              >
+                {/* {chat} */}
+                CH: {c.userId}: {c.chat}{" "}
+              </div>
+            ))}
           </div>
         </div>
         {/* <VoicedChannels /> */}
       </ScrollArea>
-      <ChatInput channelName={channelId} />
+      <ChatInput channelName={activeChannel.channelName} />
     </>
   );
 };

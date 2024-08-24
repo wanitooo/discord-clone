@@ -22,8 +22,8 @@ import ChatInput from "../discord-ui/ChatInput";
 import { useChannels, useModal } from "../../hooks/global-store";
 import { cn } from "../shadcn/utils/utils";
 
-const fetchChannels = async (serverId: number) => {
-  return await fetch(`http://127.0.0.1:3000/api/channels/${serverId}`, {
+const fetchChannels = async (serverUUID: string) => {
+  return await fetch(`http://127.0.0.1:3000/api/channels/${serverUUID}`, {
     method: "GET",
     mode: "cors",
     headers: {
@@ -35,16 +35,16 @@ const fetchChannels = async (serverId: number) => {
 };
 
 const ServerChannels = () => {
-  const { serverId }: { serverId: number } = useParams({ from: "/app" });
+  const { serverUUID }: { serverUUID: string } = useParams({ from: "/app" });
   const { onOpen } = useModal();
   const [collapsed, setCollapsed] = useState(false);
   const { activeChannel } = useChannels();
 
   const [channels, setChannels] = useState([]);
   const channelsQuery = useQuery({
-    queryKey: ["serverId", serverId],
+    queryKey: ["serverUUID", serverUUID],
     queryFn: async () => {
-      return await fetchChannels(serverId);
+      return await fetchChannels(serverUUID);
     },
   });
   // TODO: Add types to fetched data, could use zod schema types
@@ -54,6 +54,7 @@ const ServerChannels = () => {
   useEffect(() => {
     if (channelsQuery.isFetched) {
       setChannels(channelsQuery.data);
+      console.log(channelsQuery.data);
     }
   }, [channelsQuery.isFetched, channelsQuery.data]);
   if (channelsQuery.isLoading) {
@@ -67,7 +68,7 @@ const ServerChannels = () => {
   return (
     <>
       <div className="h-screen bg-discord-lighter dark:bg-discord-black w-[245px]">
-        {serverId ? (
+        {serverUUID ? (
           <div>
             {/*  Drop down component here */}
             <ServerOptionsDropdown />
@@ -105,21 +106,23 @@ const ServerChannels = () => {
                 {channels.map((channel, idx) => (
                   <CollapsibleContent key={idx} className="">
                     <Link
-                      to={`/app/${serverId}/${channel.channelId}`}
-                      params={{ serverId: "0" }}
+                      to={`/app/${serverUUID}/${channel.channelUUID}`}
+                      // params={{ serverId: "0" }}
                     >
                       <div
                         className={cn(
                           "w-11/12 flex items-center justify-between px-2 py-1 ml-1 text-sm ",
                           "hover:bg-discord-light hover:text-discord-blackest dark:hover:text-white dark:hover:bg-discord-gray hover:rounded-sm",
-                          activeChannel.channelId === channel.channelId
+                          activeChannel.channelUUID === channel.channelUUID
                             ? "bg-discord-light dark:bg-discord-gray text-discord-blackest dark:text-white rounded-sm"
                             : ""
                         )}
                       >
                         <div className="flex items-center justify-center">
                           <HashtagIcon width={15} className="mr-2" />
-                          <span>{channel.channelName}</span>
+                          <span className="lowercase">
+                            {channel.channelName}
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <IconTooltip

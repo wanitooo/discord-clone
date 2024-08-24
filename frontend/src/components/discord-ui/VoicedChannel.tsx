@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ScrollArea, Separator } from "../shadcn/ui";
+import { ScrollArea } from "../shadcn/ui";
 import { Peer } from "peerjs";
 import { PeerStream, useChannels, usePeers } from "../../hooks/global-store";
 import socket from "../../socket";
@@ -7,24 +7,15 @@ import { useParams } from "@tanstack/react-router";
 import VideoPlayer from "./VideoPlayer";
 import { cn } from "../shadcn/utils/utils";
 
-// TODO: Fix not able to scroll with group hover
+// TODO: Fix new client created each time a channel is clicked, this causes a memory leak
 const VoicedChannel = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
-  const [remotePeer, setRemotePeer] = useState("");
   const [peerInstance, setPeerInstance] = useState<Peer>();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoRef2 = useRef<HTMLVideoElement>(null);
-  const [remoteVideoRefs, setRemoteVideoRefs] = useState(null);
   const { activeChannel } = useChannels();
 
-  const {
-    peerStreams,
-    addPeerStream,
-    removePeerStream,
-    clearPeerStreams,
-    setPeerStream,
-  } = usePeers();
-  const { channelId } = useParams();
+  const { peerStreams, addPeerStream, removePeerStream } = usePeers();
+  const { channelUUID, serverUUID } = useParams({ from: "/app" });
   // Create Peer id upon joing the channel
   useEffect(() => {
     if (peerInstance) return;
@@ -39,7 +30,7 @@ const VoicedChannel = () => {
 
     navigator.mediaDevices
       // implementation lags like hell if you force a 16:9 aspect ratio
-      .getUserMedia({ video: true, audio: false })
+      .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         setMediaStream(stream);
         if (videoRef.current) {
@@ -62,20 +53,20 @@ const VoicedChannel = () => {
 
     socket.emit("joinChannel", {
       userId: 22,
-      channelId,
+      channelUUID,
+      serverUUID,
       peerId: peerInstance.id,
     });
 
     peerInstance.on("call", (c) => {
-      // console.log("got called", c.peer);
       c.answer(mediaStream);
       c.on("stream", (callerStream) => {
         addPeerStream(c.peer, callerStream);
       });
     });
 
-    // socket.emit("ready");
     socket.on("userJoined", ({ peerId }: { peerId: string }) => {
+      console.log("triggered");
       if (peerId !== peerInstance.id) {
         console.log("user joined", peerId);
         setTimeout(() => {
@@ -91,20 +82,29 @@ const VoicedChannel = () => {
     });
 
     socket.on("userDisconnected", ({ toDelete }) => {
-      console.log("toDelete", toDelete);
+      // console.log("toDelete", toDelete);
       removePeerStream(toDelete);
-
-      // console.log("peerStreams after disconnection", peerStreams);
-      // setPeerStream(activeUsers);
     });
-  }, [peerInstance, mediaStream, addPeerStream, channelId, removePeerStream]);
+
+    // return () => {
+    //   peerInstance.destroy();
+    //   removePeerStream(peerInstance.id);
+    // };
+  }, [
+    peerInstance,
+    mediaStream,
+    addPeerStream,
+    channelUUID,
+    removePeerStream,
+    serverUUID,
+  ]);
 
   useEffect(() => {
     console.log("peerstreams", peerStreams);
   }, [peerStreams]);
 
   const videoPlayerClasses = cn(
-    "grow-1 shrink-1 max-w-[45%] max-h-[45%]",
+    "rounded-lg grow-1 shrink-1 max-w-[45%] max-h-[45%] cursor-pointer",
     peerStreams.length >= 2 ? "basis-1/3" : "basis-1/2"
   );
 
@@ -126,8 +126,6 @@ const VoicedChannel = () => {
           "flex flex-wrap w-full h-full items-center align-middle justify-center gap-2 pt-16"
         )}
       >
-        {/* 
-        <Separator className="bg-white h-2" /> */}
         <VideoPlayer
           mediaStream={mediaStream}
           key={Math.random()}

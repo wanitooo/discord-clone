@@ -12,6 +12,7 @@ import {
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto, insertChannelSchema } from './dto/channels-dto';
 import { ZodPipe } from 'src/pipes/zod-pipe';
+import { ServersService } from 'src/servers/servers.service';
 
 @Controller('channels')
 export class ChannelsController {
@@ -43,29 +44,46 @@ export class ChannelsController {
     }
     return channels;
   }
-  @Get(':serverId')
-  findAllChannelsInServer(@Param('serverId') id: string) {
-    const channels = this.channelsService.findAllChannelsInServer(+id);
+  @Get(':serverUUID')
+  findAllChannelsInServer(@Param('serverUUID') uuid: string) {
+    const channels = this.channelsService.findAllChannelsInServer(uuid);
     if (!channels) {
       return { message: 'No channels found' };
     }
     return channels;
   }
 
-  @Get(':serverId/:channelId')
-  findAChannelsInServer(
-    @Param('serverId') serverId: string,
-    @Param('channelId') channelId: string,
+  @Get(':serverUUID/:channelUUID')
+  findAChannelInServer(
+    @Param('serverUUID') serverUUID: string,
+    @Param('channelUUID') channelUUID: string,
   ) {
     const channel = this.channelsService.findAChannelInServer(
-      +serverId,
-      +channelId,
+      serverUUID,
+      channelUUID,
     );
+
+    // console.log('channel params', serverUUID, channelUUID);
     if (!channel) {
       return { message: 'No channel found' };
     }
     return channel;
   }
+
+  // @Get(':serverId/:channelId')
+  // findAChannelsInServer(
+  //   @Param('serverId') serverId: string,
+  //   @Param('channelId') channelId: string,
+  // ) {
+  //   const channel = this.channelsService.findAChannelInServer(
+  //     +serverId,
+  //     +channelId,
+  //   );
+  //   if (!channel) {
+  //     return { message: 'No channel found' };
+  //   }
+  //   return channel;
+  // }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

@@ -11,15 +11,15 @@ export const server = new Route({
 
 export const serverDetail = new Route({
   getParentRoute: () => appRoute,
-  path: "/$serverId",
-  parseParams: (params) => params.serverId as string,
+  path: "/$serverUUID",
+  parseParams: (params) => params.serverUUID as string,
   component: () => <ServerChannels />,
 });
 
 export const channelDetail = new Route({
   getParentRoute: () => serverDetail,
-  path: "/$channelId",
-  parseParams: (params) => params.channelId as string,
+  path: "/$channelUUID",
+  parseParams: (params) => params.channelUUID as string,
   component: () => <Channel />,
 });
 

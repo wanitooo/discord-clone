@@ -8,40 +8,61 @@ import { DRIZZLE_ORM } from 'src/nest-drizzle/constants';
 import { PostgresJsDb } from 'src/nest-drizzle';
 import { messages } from 'src/nest-drizzle/discordSchema';
 import { eq, lt, gte, ne, asc } from 'drizzle-orm';
+import { ChannelsService } from 'src/channels/channels.service';
 @Injectable()
 export class ChatsService {
-  constructor(@Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb) {}
+  constructor(
+    @Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb,
+    private readonly channelsService: ChannelsService,
+  ) {}
   async create(message: CreateMessageDto) {
     console.log('chat ', message);
-    const { userId, channelId, chat } = message;
-    const result = await this.db.transaction(async (tx) => {
-      return await tx
-        .insert(messages)
-        .values({
-          userId,
-          channelId,
-          chat,
-        })
-        .returning({
-          insertedId: messages.id,
-          insertedUserId: messages.userId,
-          insertedChannelId: messages.channelId,
-          insertedChat: messages.chat,
-        });
-    });
+    const { userId, channelUUID, serverUUID, chat } = message;
+
+    const channelId = await this.channelsService
+      .findAChannelInServer(serverUUID, channelUUID)
+      .then((channel) => channel.channelId)
+      .catch((err) => console.log(err));
+
+    // console.log(channelId);
+    if (channelId) {
+      var result = await this.db.transaction(async (tx) => {
+        return await tx
+          .insert(messages)
+          .values({
+            userId,
+            channelId,
+            chat,
+          })
+          .returning({
+            insertedId: messages.id,
+            insertedUserId: messages.userId,
+            insertedChannelId: messages.channelId,
+            insertedChat: messages.chat,
+          });
+      });
+    }
     return result;
   }
 
   async findAll(get: GetMessagesDto) {
     console.log('get ', get);
-    const { userId, channelId } = get;
-    const result = await this.db.transaction(async (tx) => {
-      return await tx
-        .select()
-        .from(messages)
-        .where(eq(messages.channelId, channelId))
-        .orderBy(asc(messages.updatedAt));
-    });
+    const { userId, channelUUID, serverUUID } = get;
+    // console.log('in', channelUUID, serverUUID);
+
+    const channelId = await this.channelsService
+      .findAChannelInServer(serverUUID, channelUUID)
+      .then((channel) => channel.channelId)
+      .catch((err) => console.log(err));
+    if (channelId) {
+      var result = await this.db.transaction(async (tx) => {
+        return await tx
+          .select()
+          .from(messages)
+          .where(eq(messages.channelId, channelId))
+          .orderBy(asc(messages.updatedAt));
+      });
+    }
     // console.log('RES ', result);
     return result;
   }

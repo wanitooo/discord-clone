@@ -25,7 +25,7 @@ const fetchServers = async () => {
 const Sidebar = () => {
   const [servers, setServers] = useState([]);
   const serversQuery = useQuery({
-    queryKey: ["servers"],
+    queryKey: ["servers", servers],
     queryFn: async () => {
       return await fetchServers();
     },
@@ -37,6 +37,7 @@ const Sidebar = () => {
   useEffect(() => {
     if (serversQuery.isFetched) {
       setServers(serversQuery.data);
+      console.log(serversQuery.data);
     }
   }, [serversQuery.isFetched, serversQuery.data]);
 
@@ -63,9 +64,9 @@ const Sidebar = () => {
         <ScrollArea className="flex-1 w-full ">
           {servers.map((server) => (
             <Link
-              to={`/app/${server.serverId}`}
+              to={`/app/${server.serverUUID}`}
               params={{ serverId: "0" }}
-              key={server.serverName + server.serverId}
+              key={server.serverUUID}
             >
               <SidebarIcon
                 label={`${server.serverName}`}
