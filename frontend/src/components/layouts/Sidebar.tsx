@@ -53,7 +53,7 @@ const Sidebar = () => {
   // Always call useEffect unconditionally
   return (
     <>
-      <div className="h-screen w-[72px] bg-discord-light dark:bg-discord-blackest flex flex-col items-center gap-2 ">
+      <div className="h-screen w-[86px] bg-discord-light dark:bg-discord-blackest flex flex-col items-center gap-2 pt-2">
         <SidebarIcon
           align="center"
           label="Add a server"

@@ -5,24 +5,31 @@
 @font-face {
   font-family: "GintoNord";
   font-weight: 700;
-  src: url("fonts/ABCGintoNord-Bold-Trial-BF651b7b7670e10.otf");
+  src: url("/fonts/ABCGintoNord-Bold-Trial-BF651b7b7670e10.otf");
 }
 
 @font-face {
   font-family: "GintoNord";
   font-weight: 400;
-  src: url("fonts/ABCGintoNord-Regular-Trial-BF651b7b7786b8a.otf");
+  src: url("/fonts/ABCGintoNord-Regular-Trial-BF651b7b7786b8a.otf");
 }
 
 @font-face {
   font-family: "ggSans";
   font-weight: 400;
-  src: url("fonts/gg sans Regular.ttf");
+  src: url("/fonts/gg sans Semibold.ttf");
 }
+
+@font-face {
+  font-family: "ggSans";
+  font-weight: 500;
+  src: url("/fonts/gg sans Medium.ttf");
+}
+
 @font-face {
   font-family: "ggSans";
   font-weight: 600;
-  src: url("fonts/gg sans Semibold.ttf");
+  src: url("/fonts/gg sans Semibold.ttf");
 }
 
 html,
@@ -150,5 +157,6 @@ body :root {
   body {
     @apply bg-background text-foreground;
     @apply h-screen w-screen;
+    @apply font-ggSans;
   }
 }

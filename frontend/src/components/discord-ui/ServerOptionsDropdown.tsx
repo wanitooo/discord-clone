@@ -30,7 +30,6 @@ const ServerOptionsDropdown = () => {
           rounded-none 
           w-full h-12 flex-items-center justify-between
           border-b-2 
-          font-normal
           transition-all
           bg-discord-lighter
           text-discord-blackest
@@ -41,6 +40,7 @@ const ServerOptionsDropdown = () => {
           dark:hover:bg-discord-gray/70
           font-semibold
           dark:font-medium
+          text-md
         "
         >
           Server Options

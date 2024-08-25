@@ -6,9 +6,11 @@ import socket from "../../socket";
 import { useParams } from "@tanstack/react-router";
 import VideoPlayer from "./VideoPlayer";
 import { cn } from "../shadcn/utils/utils";
+import { SpeakerWaveIcon, HashtagIcon } from "@heroicons/react/24/solid";
+import { Separator } from "@radix-ui/react-menubar";
 
 // TODO: Fix new client created each time a channel is clicked, this causes a memory leak
-const VoicedChannel = () => {
+const VoicedChannel = ({ channel }) => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [peerInstance, setPeerInstance] = useState<Peer>();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -71,12 +73,13 @@ const VoicedChannel = () => {
         console.log("user joined", peerId);
         setTimeout(() => {
           const call = peerInstance.call(peerId, mediaStream);
-
-          // console.log("call triggered", call);
-          call.on("stream", (peerStream) => {
-            addPeerStream(peerId, peerStream);
-            // console.log("peerStream after calling ", peerStreams);
-          });
+          if (call) {
+            // console.log("call triggered", call);
+            call.on("stream", (peerStream) => {
+              addPeerStream(peerId, peerStream);
+              // console.log("peerStream after calling ", peerStreams);
+            });
+          }
         }, 1000);
       }
     });
@@ -112,8 +115,12 @@ const VoicedChannel = () => {
     <ScrollArea className="bg-black w-full h-full flex flex-row group">
       {/* On hover hud */}
       <div className="absolute top-4 left-0 right-0 w-full h-full text-white  transition-all ease-in-out duration-500 ">
-        <div className="-translate-y-2 group-hover:translate-y-2 opacity-0 group-hover:opacity-100 text-2xl font-ggSans font-normal scale-y-[85%] group-hover:scale-y-100 px-6 duration-300 transition-all">
-          # {activeChannel.channelName} | peer: {peerInstance?.id}
+        <div className="-translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 text-xl font-ggSans font-normal text-base scale-y-[85%] group-hover:scale-y-100 px-6 duration-300 transition-all">
+          <div className="flex flex-row gap-2">
+            <SpeakerWaveIcon width={20} className="mr-2" />
+            <span className="lowercase">{channel.channelName}</span>
+            <span className="text-green-400">{peerInstance?.id}</span>
+          </div>
         </div>
 
         <div className="absolute bottom-4 left-0 right-0 w-full bg-white text-black opacity-0 group-hover:opacity-100 duration-300 transition-all">

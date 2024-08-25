@@ -60,8 +60,8 @@ const Channel = () => {
   }
 
   const Render = {
-    text: <TextChannel />,
-    voice: <VoicedChannel />,
+    text: <TextChannel channel={channel} />,
+    voice: <VoicedChannel channel={channel} />,
   };
   // console.log("channel ", channel);
   return <> {channelType && Render[channelType]} </>;

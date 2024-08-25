@@ -14,6 +14,7 @@ import {
   Cog8ToothIcon,
   ChevronRightIcon,
   PlusIcon,
+  SpeakerWaveIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "@tanstack/react-router";
 import IconTooltip from "../discord-ui/IconTooltip";
@@ -67,7 +68,7 @@ const ServerChannels = () => {
   }
   return (
     <>
-      <div className="h-screen bg-discord-lighter dark:bg-discord-black w-[245px]">
+      <div className="h-screen bg-discord-lighter dark:bg-discord-black w-[286px]">
         {serverUUID ? (
           <div>
             {/*  Drop down component here */}
@@ -111,15 +112,19 @@ const ServerChannels = () => {
                     >
                       <div
                         className={cn(
-                          "w-11/12 flex items-center justify-between px-2 py-1 ml-1 text-sm ",
-                          "hover:bg-discord-light hover:text-discord-blackest dark:hover:text-white dark:hover:bg-discord-gray hover:rounded-sm",
+                          "w-11/12 flex items-center justify-between px-2 py-1 ml-1 ",
+                          "hover:bg-discord-light hover:text-discord-blackest dark:hover:text-white dark:hover:bg-discord-gray hover:rounded-sm text-base font-medium font-ggSans",
                           activeChannel.channelUUID === channel.channelUUID
                             ? "bg-discord-light dark:bg-discord-gray text-discord-blackest dark:text-white rounded-sm"
                             : ""
                         )}
                       >
-                        <div className="flex items-center justify-center">
-                          <HashtagIcon width={15} className="mr-2" />
+                        <div className="flex items-center justify-center ">
+                          {channel.channelType == "text" ? (
+                            <HashtagIcon width={15} className="mr-2" />
+                          ) : (
+                            <SpeakerWaveIcon width={15} className="mr-2" />
+                          )}
                           <span className="lowercase">
                             {channel.channelName}
                           </span>

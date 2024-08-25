@@ -1,12 +1,10 @@
 import { Bars2Icon } from "@heroicons/react/24/solid";
 import { ScrollArea } from "../shadcn/ui/ScrollArea";
 import { useEffect, useState } from "react";
-import { createPresignedUrlWithClient } from "../../s3";
 
 import socket from "../../socket";
 import ChatInput from "./ChatInput";
 import { useParams } from "@tanstack/react-router";
-import VoicedChannels from "./VoicedChannel";
 import { useChannels, usePeers } from "../../hooks/global-store";
 
 // TODO: get type interface from a lib folder of types -> zod
@@ -19,23 +17,13 @@ interface Chat {
   channelId: number;
 }
 
-const ChatBox = () => {
+const ChatBox = ({ channel }) => {
   const [chats, setChats] = useState<Chat[] | undefined>();
   const { activeChannel } = useChannels();
   let { channelUUID, serverUUID }: { channelUUID: string; serverUUID: string } =
     useParams({ from: "/app" });
   // channelId = parseInt(channelId);
   const { peerStreams } = usePeers();
-
-  useEffect(() => {
-    const fetchImageUrl = async () => {
-      const res = await createPresignedUrlWithClient(null);
-      // console.log(res);
-      setImage(res);
-    };
-
-    fetchImageUrl();
-  }, []);
 
   useEffect(() => {
     // console.log("channel ID", channelId);
@@ -81,29 +69,27 @@ const ChatBox = () => {
       </div>
       {/* <ChatBoxChannel /> */}
 
-      <ScrollArea className="w-full h-full">
-        <div className="w-full h-full">
+      <div className="w-full h-full flex flex-col-reverse overflow-y-auto">
+        <div className="flex flex-col p-4">
           {/* {JSON.stringify(image)} */}
           {/* <img src={image} alt="aws image" /> */}
           {/* {JSON.stringify(chats)} */}
-          <div className="">
-            {chats?.map((c) => (
-              <div
-                className=" text-discord-gray 
+          {chats?.map((c) => (
+            <div
+              className=" text-discord-gray 
                 hover:bg-discord-black/25
                 dark:hover:bg-discord-black/50 px-4
-               dark:text-white 
+               dark:text-white py-1
                 "
-                key={Math.random()}
-              >
-                {/* {chat} */}
-                CH: {c.userId}: {c.chat}{" "}
-              </div>
-            ))}
-          </div>
+              key={Math.random()}
+            >
+              {/* {chat} */}
+              CH: {c.userId}: {c.chat}{" "}
+            </div>
+          ))}
         </div>
         {/* <VoicedChannels /> */}
-      </ScrollArea>
+      </div>
       <ChatInput channelName={activeChannel.channelName} />
     </>
   );

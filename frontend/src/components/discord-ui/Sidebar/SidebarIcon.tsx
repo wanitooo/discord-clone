@@ -58,7 +58,7 @@ const SidebarIcon = ({
                 objectFit: "fill",
               }}
               className="
-              w-10 h-10 rounded-3xl 
+              w-12 h-12 rounded-3xl 
               transition-all
               duration-300
               group-hover:rounded-xl 
@@ -69,7 +69,7 @@ const SidebarIcon = ({
           <button onClick={() => onOpen("createServer")}>
             <div
               className="
-              w-10 h-10 rounded-3xl 
+              w-12 h-12 rounded-3xl 
               flex flex-col
               items-center
               align-middle

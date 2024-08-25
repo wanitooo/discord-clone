@@ -48,7 +48,7 @@ const ChatInput = ({ channelName = " " }) => {
     <Form {...chatInputForm}>
       <form
         onSubmit={chatInputForm.handleSubmit(onSubmit)}
-        className="w-4/5 space-y-6"
+        className="w-full space-y-6"
       >
         <FormField
           control={chatInputForm.control}
