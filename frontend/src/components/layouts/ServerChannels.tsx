@@ -55,7 +55,7 @@ const ServerChannels = () => {
   useEffect(() => {
     if (channelsQuery.isFetched) {
       setChannels(channelsQuery.data);
-      console.log(channelsQuery.data);
+      // console.log(channelsQuery.data);
     }
   }, [channelsQuery.isFetched, channelsQuery.data]);
   if (channelsQuery.isLoading) {

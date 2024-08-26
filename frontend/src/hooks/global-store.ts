@@ -1,8 +1,7 @@
-import { Channel } from "diagnostics_channel";
 import Peer from "peerjs";
 import { create } from "zustand";
-
 import { persist } from "zustand/middleware";
+import { peer as frontendPeer } from "../socket";
 export type ModalType = "createServer" | "createChannel";
 
 interface ModalStore {
@@ -41,6 +40,7 @@ export type PeerStream = {
   stream: MediaStream;
 };
 export interface PeerStore {
+  peerInstance: Peer;
   peerStreams: PeerStream[];
   addPeerStream: (peerId: string, stream: MediaStream) => void;
   removePeerStream: (id: string) => void;
@@ -50,6 +50,7 @@ export interface PeerStore {
 
 export const usePeers = create<PeerStore>()((set) => ({
   peerStreams: [],
+  peerInstance: frontendPeer,
   setPeerStream: (peerStreams) =>
     set(() => ({
       peerStreams,

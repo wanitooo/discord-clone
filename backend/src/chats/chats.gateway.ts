@@ -117,11 +117,12 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const { channelUUID } = getMessage;
     client.leave(`channel-${channelUUID}`);
-    // console.log('Joined channel ', channelUUID);
+    console.log('rec leave channel', client.id);
     // console.log(client.rooms);
+    client.disconnect();
     this.server.to(`channel-${channelUUID}`).emit('channelMessages', {
       channelUUID,
-      message: 'left channel',
+      message: client.id + ' left channel-' + channelUUID,
     });
   }
 

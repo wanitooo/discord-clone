@@ -37,7 +37,7 @@ const Sidebar = () => {
   useEffect(() => {
     if (serversQuery.isFetched) {
       setServers(serversQuery.data);
-      console.log(serversQuery.data);
+      // console.log(serversQuery.data);
     }
   }, [serversQuery.isFetched, serversQuery.data]);
 
