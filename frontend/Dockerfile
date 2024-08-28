@@ -19,4 +19,4 @@ RUN npm run build
 EXPOSE 3001
 
 # Start the application (adjust if you are using a different script)
-CMD ["npm", "run preview --port 3001"]
+CMD ["npm", "run", "preview","--", "--port", "3001"]
