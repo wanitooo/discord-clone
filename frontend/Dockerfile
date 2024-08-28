@@ -18,5 +18,5 @@ RUN npm run build
 # Expose the port that your application runs on (usually a frontend server like React runs on 3000)
 EXPOSE 3001
 
-# Start the application (adjust if you are using a different script)
-CMD ["npm", "run", "preview","--", "--port", "3001"]
+# Start the application 
+CMD ["npm", "run", "preview","--", "--port", "3001", "--host", "0.0.0.0"]

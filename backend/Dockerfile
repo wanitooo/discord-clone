@@ -18,5 +18,5 @@ RUN npm run build
 # Expose the port that your application runs on
 EXPOSE 3000
 
-# Start the application (adjust if you are using a different script)
+# Start the application 
 CMD ["node", "dist/src/main.js"]
