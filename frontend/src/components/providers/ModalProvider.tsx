@@ -1,3 +1,4 @@
+import LoadingModal from "../discord-ui/LoadingModal";
 import { CreateChannelModal } from "../discord-ui/Modals/CreateChannelModal";
 import { CreateServerModal } from "../discord-ui/Modals/CreateSeverModal";
 import { useEffect, useState } from "react";
@@ -15,6 +16,7 @@ export const ModalProvider = () => {
     <>
       <CreateServerModal />
       <CreateChannelModal />
+      <LoadingModal />
     </>
   );
 };

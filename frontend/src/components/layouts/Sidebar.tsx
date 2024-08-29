@@ -4,6 +4,7 @@ import ThemeToggle from "../discord-ui/ThemeToggle";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLoading } from "../../hooks/global-store";
 
 const fetchServers = async () => {
   return await fetch("http://127.0.0.1:3000/api/servers", {
@@ -30,13 +31,12 @@ const Sidebar = () => {
       return await fetchServers();
     },
   });
-  // TODO: Add types to fetched data, could use zod types shit
-  // console.log("SERVERS: ", serversQuery.data);
+  const { setServersFetched } = useLoading();
 
-  // Conditionally perform actions based on serversQuery.isFetched
   useEffect(() => {
     if (serversQuery.isFetched) {
       setServers(serversQuery.data);
+      setServersFetched(true);
       // console.log(serversQuery.data);
     }
   }, [serversQuery.isFetched, serversQuery.data]);
@@ -88,7 +88,7 @@ const Sidebar = () => {
               tooltip={server.name}
           /> */}
         </ScrollArea>
-        <ThemeToggle></ThemeToggle>
+        <ThemeToggle />
       </div>
       {/* Contains the content or navigation links for each server */}
     </>

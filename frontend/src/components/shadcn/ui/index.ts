@@ -8,3 +8,4 @@ export * from "./Form";
 export * from "./Label";
 export * from "./Input";
 export * from "./DropdownMenu";
+export * from "./ChannelSwitch";

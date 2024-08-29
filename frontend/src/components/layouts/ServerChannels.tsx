@@ -20,7 +20,7 @@ import { Link } from "@tanstack/react-router";
 import IconTooltip from "../discord-ui/IconTooltip";
 import { useQuery } from "@tanstack/react-query";
 import ChatInput from "../discord-ui/ChatInput";
-import { useChannels, useModal } from "../../hooks/global-store";
+import { useChannels, useLoading, useModal } from "../../hooks/global-store";
 import { cn } from "../shadcn/utils/utils";
 
 const fetchChannels = async (serverUUID: string) => {
@@ -52,9 +52,11 @@ const ServerChannels = () => {
   // console.log("Channels: ", channelsQuery.data);
 
   // Conditionally perform actions based on channelsQuery.isFetched
+  const { setChannelsFetched } = useLoading();
   useEffect(() => {
     if (channelsQuery.isFetched) {
       setChannels(channelsQuery.data);
+      setChannelsFetched(true);
       // console.log(channelsQuery.data);
     }
   }, [channelsQuery.isFetched, channelsQuery.data]);

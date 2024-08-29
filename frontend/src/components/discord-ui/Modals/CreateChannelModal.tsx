@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import {
+  ChannelSwitch,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -24,8 +25,8 @@ import {
 
 import { useModal } from "../../../hooks/global-store";
 import { RadioGroup, RadioGroupItem } from "../../shadcn/ui/RadioGroup";
-import { Switch } from "../../shadcn/ui/Switch";
 import { useParams } from "@tanstack/react-router";
+import { HashtagIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -120,26 +121,28 @@ export const CreateChannelModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
+      <DialogContent className="p-0 overflow-hidden bg-slate-50 text-black dark:text-slate-300 dark:bg-discord-gray">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl font-bold">
             Create your channel
           </DialogTitle>
-          <DialogDescription className="text-zinc-500">
+          <DialogDescription className="text-zinc-500 dark:text-slate-300">
             {/* dynamically able to change based on channel categories*/}
-            in {""} channels
+            <span>in server X</span>
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-8 px-6 ">
-              <div className="flex text-zinc-500">
+              <div className="flex text-zinc-500 dark:text-slate-300 bg-slate-50 dark:bg-discord-gray">
                 <FormField
                   control={form.control}
                   name="channelType"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-4 w-full">
-                      <FormLabel>CHANNEL TYPE</FormLabel>
+                    <FormItem className="flex flex-col gap-2 w-full">
+                      <FormLabel className="text-xs uppercase">
+                        Channel Type
+                      </FormLabel>
                       <FormControl className="w-full">
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -147,8 +150,8 @@ export const CreateChannelModal = () => {
                           className="space-y-1 "
                         >
                           <FormItem
-                            className="flex flex-row-reverse justify-between items-center space-x-3 space-y-0 
-                          dark:bg-discord-black dark:hover:bg-discord-gray 
+                            className="flex flex-row-reverse justify-between items-center space-x-3 space-y-0  
+                          dark:bg-discord-black dark:hover:bg-discord-gray
                           bg-slate-50 
                          hover:bg-slate-100
                          focus:bg-slate-100
@@ -158,8 +161,11 @@ export const CreateChannelModal = () => {
                               <RadioGroupItem value="text" />
                             </FormControl>
                             <FormLabel className="font-normal">
-                              # Text
-                              <FormDescription>
+                              <div className="flex flex-row gap-1 pb-1">
+                                <HashtagIcon width={15} />
+                                <span className="text-sm">Text</span>
+                              </div>
+                              <FormDescription className="text-slate-400/75">
                                 Send text messages
                               </FormDescription>
                             </FormLabel>
@@ -178,8 +184,11 @@ export const CreateChannelModal = () => {
                             </FormControl>
                             <FormLabel className="font-normal">
                               {" "}
-                              {">"} Voice
-                              <FormDescription>
+                              <div className="flex flex-row gap-1 pb-1">
+                                <SpeakerWaveIcon width={15} />
+                                <span className="text-sm">Voice</span>
+                              </div>
+                              <FormDescription className="text-slate-400/75">
                                 Hang out together with voice, and video
                               </FormDescription>
                             </FormLabel>
@@ -203,8 +212,8 @@ export const CreateChannelModal = () => {
                     <FormControl>
                       <Input
                         disabled={isLoading}
-                        className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                        placeholder="Enter your channel name"
+                        className="bg-slate-100 dark:bg-discord-black border-0 focus-visible:ring-0 dark:text-slate-300 text-white focus-visible:ring-offset-0 placeholder:text-slate-500/50 dark:placeholder:text-slate-100/50 placeholder:font-normal"
+                        placeholder="# channel name"
                         {...field}
                         onChange={(e) => {
                           // console.log("NAME FIELD", field);
@@ -225,7 +234,7 @@ export const CreateChannelModal = () => {
                       PRIVATE CHANNEL
                     </FormLabel>
                     <FormControl>
-                      <Switch
+                      <ChannelSwitch
                         checked={field.value}
                         // className="w-10 y-10"
                         onCheckedChange={field.onChange}
@@ -237,8 +246,12 @@ export const CreateChannelModal = () => {
               />
             </div>
 
-            <DialogFooter className="bg-gray-100 px-6 py-4">
-              <Button disabled={isLoading} type="submit">
+            <DialogFooter className="bg-gray-100 px-6 py-4 bg-discord-black">
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className="bg-[#5865f2] text-white hover:bg-[#5865f2]/75"
+              >
                 Create
               </Button>
             </DialogFooter>
