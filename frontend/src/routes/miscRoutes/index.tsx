@@ -1,14 +1,7 @@
-import { Route } from "@tanstack/react-router";
+import { createRoute } from "@tanstack/react-router";
 import { rootRoute } from "../router";
-import Landing from "../../pages/Landing";
 
-const landingRoute = new Route({
-  getParentRoute: () => rootRoute,
-  path: "/",
-  component: Landing,
-});
-
-const landing2 = new Route({
+const landing2 = createRoute({
   getParentRoute: () => landingRoute,
   path: "/2",
   component: () => (
@@ -17,7 +10,7 @@ const landing2 = new Route({
     </div>
   ),
 });
-const FAQ = new Route({
+const FAQ = createRoute({
   getParentRoute: () => rootRoute,
   path: "/faq",
   component: () => (

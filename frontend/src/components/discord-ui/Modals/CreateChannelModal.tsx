@@ -73,7 +73,7 @@ const createChannel = async (
 // Add icons in general
 // Polish alignments
 export const CreateChannelModal = () => {
-  const { serverUUID } = useParams({ from: "/app" });
+  const { serverUUID } = useParams({});
   // console.log("serverid", serverId);
   const createChannelQuery = useQuery({
     queryKey: ["createChannelQuery", serverUUID],

@@ -1,7 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
 import { ModalProvider } from "./components/providers/ModalProvider";
 import "./globals.css";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+// import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTheme } from "./hooks/global-store";
 import { useEffect } from "react";

@@ -29,7 +29,7 @@ const Channel = () => {
   const {
     serverUUID,
     channelUUID,
-  }: { serverUUID: string; channelUUID: string } = useParams({ from: "/app" });
+  }: { serverUUID: string; channelUUID: string } = useParams({});
 
   // console.log("cserverid, ch id", serverId, channelId);
   const channelQuery = useQuery({

@@ -1,4 +1,9 @@
-import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "@tanstack/react-router";
 import { server } from "../../routes/appRoutes/serverRoutes";
 import { useEffect, useState } from "react";
 import ServerOptionsDropdown from "../discord-ui/ServerOptionsDropdown";
@@ -35,8 +40,15 @@ const fetchChannels = async (serverUUID: string) => {
     .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
 };
 
+import { getRouteApi } from "@tanstack/react-router";
+
+const routeApi = getRouteApi("/app/$serverUUID/$channelUUID");
+// TODO: Separate into diff files server detail, channel detail
+
 const ServerChannels = () => {
-  const { serverUUID }: { serverUUID: string } = useParams({ from: "/app" });
+  const { serverUUID, channelUUID } = routeApi.useParams();
+  console.log("serveruuid", serverUUID);
+  console.log("asdhajdhas", channelUUID);
   const { onOpen } = useModal();
   const [collapsed, setCollapsed] = useState(false);
   const { activeChannel } = useChannels();

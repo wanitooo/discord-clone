@@ -1,29 +1,37 @@
-import { Router, Route, RootRoute } from "@tanstack/react-router";
+import {
+  Router,
+  Route,
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from "@tanstack/react-router";
 import App from "../pages/App.tsx";
 import Root from "../Root.tsx";
-import landingRouteTree from "./miscRoutes/index.tsx";
 import {
   channelDetail,
   server,
   serverDetail,
-  voicedChannels,
 } from "./appRoutes/serverRoutes.tsx";
+import Landing from "../pages/Landing.tsx";
 
 // Create a root route
-export const rootRoute = new RootRoute({
-  component: Root,
-});
+export const rootRoute = createRootRoute({ component: Root });
 
 // Create an index route
-export const appRoute = new Route({
+export const landingRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/app",
+  path: "/",
+  component: Landing,
+});
+export const appRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "app",
   component: App,
 });
 
-const aboutRoute = new Route({
+const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/about",
+  path: "about",
   component: about,
 });
 
@@ -32,15 +40,15 @@ function about() {
 }
 // Create the route tree using your routes
 export const serverRouteTree = serverDetail.addChildren([channelDetail]);
-export const appRouteTree = appRoute.addChildren([server, serverDetail]);
+export const appRouteTree = appRoute.addChildren([server, serverRouteTree]);
 const routeTree = rootRoute.addChildren([
-  landingRouteTree,
+  landingRoute,
   aboutRoute,
   appRouteTree,
 ]);
 
 // Create the router using your route tree
-export const router = new Router({ routeTree });
+export const router = createRouter({ routeTree });
 
 // Register your router for maximum type safety
 declare module "@tanstack/react-router" {

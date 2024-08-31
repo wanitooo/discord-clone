@@ -32,7 +32,7 @@ const ChatInput = ({ channelName = " " }) => {
   const {
     channelUUID,
     serverUUID,
-  }: { channelUUID: string; serverUUID: string } = useParams({ from: "/app" });
+  }: { channelUUID: string; serverUUID: string } = useParams({});
   const onSubmit = (data) => {
     // console.log("TEST", );
     socket.emit("sendMessage", {

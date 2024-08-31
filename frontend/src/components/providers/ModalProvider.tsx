@@ -1,4 +1,4 @@
-import LoadingModal from "../discord-ui/LoadingModal";
+import LoadingModal from "../discord-ui/Modals/LoadingModal";
 import { CreateChannelModal } from "../discord-ui/Modals/CreateChannelModal";
 import { CreateServerModal } from "../discord-ui/Modals/CreateSeverModal";
 import { useEffect, useState } from "react";
