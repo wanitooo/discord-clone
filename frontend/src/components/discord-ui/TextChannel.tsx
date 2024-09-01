@@ -1,11 +1,11 @@
 import { Bars2Icon } from "@heroicons/react/24/solid";
-import { ScrollArea } from "../shadcn/ui/ScrollArea";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import socket from "../../socket";
 import ChatInput from "./ChatInput";
 import { useParams } from "@tanstack/react-router";
 import { useChannels, usePeers } from "../../hooks/global-store";
+import Messages from "./Messages";
 
 // TODO: get type interface from a lib folder of types -> zod
 // - append to the current list of chats, instead of getting all the rows -> chat service + chat box set state
@@ -22,12 +22,16 @@ const ChatBox = ({ channel }) => {
   const { activeChannel } = useChannels();
   let { channelUUID, serverUUID }: { channelUUID: string; serverUUID: string } =
     useParams({ from: "/app" });
-  // channelId = parseInt(channelId);
   const { peerStreams } = usePeers();
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // console.log("channel ID", channelId);
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "instant" });
+    }
+  }, [chats]);
 
+  useEffect(() => {
     socket.emit("joinChannel", {
       userId: 21,
       channelUUID,
@@ -42,7 +46,6 @@ const ChatBox = ({ channel }) => {
 
   socket.on("channelMessages", (data) => {
     setChats(data.messages); // retrieves channel messages
-    // console.log("chats", data);
   });
 
   socket.on("newMessageEvent", (data) => {
@@ -69,24 +72,17 @@ const ChatBox = ({ channel }) => {
       </div>
       {/* <ChatBoxChannel /> */}
 
-      <div className="w-full h-full flex flex-col-reverse overflow-y-auto">
-        <div className="flex flex-col p-4">
+      <div className=" w-full h-full pb-4 overflow-hidden">
+        <div className="w-full h-full overflow-y-auto flex flex-col-reverse">
           {/* {JSON.stringify(image)} */}
           {/* <img src={image} alt="aws image" /> */}
           {/* {JSON.stringify(chats)} */}
-          {chats?.map((c) => (
-            <div
-              className=" text-discord-gray 
-                hover:bg-discord-black/25
-                dark:hover:bg-discord-black/50 px-4
-               dark:text-white py-1
-                "
-              key={Math.random()}
-            >
-              {/* {chat} */}
-              CH: {c.userId}: {c.chat}{" "}
-            </div>
-          ))}
+          {chats
+            ?.map((c) => (
+              <Messages chat={c.chat} userId={c.userId} key={Math.random()} />
+            ))
+            .reverse()}
+          <div ref={scrollRef} />
         </div>
         {/* <VoicedChannels /> */}
       </div>

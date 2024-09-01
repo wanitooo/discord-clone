@@ -17,7 +17,7 @@
 @font-face {
   font-family: "ggSans";
   font-weight: 400;
-  src: url("/fonts/gg sans Semibold.ttf");
+  src: url("/fonts/gg sans Regular.ttf");
 }
 
 @font-face {
@@ -148,6 +148,18 @@ body :root {
     background-size: 3px 3px; /* Adjust for more or less grain */
     z-index: -1;
   }
+
+  ::-webkit-scrollbar {
+    @apply w-2 h-2.5 bg-discord-blackest rounded-full;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-black/50 border-[1px] border-transparent border-solid bg-clip-padding;
+  }
 }
 
 @layer base {
@@ -158,5 +170,11 @@ body :root {
     @apply bg-background text-foreground;
     @apply h-screen w-screen;
     @apply font-ggSans;
+  }
+}
+
+@layer components {
+  .scroll-rtl {
+    direction: rtl;
   }
 }
