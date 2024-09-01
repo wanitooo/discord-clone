@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { CreateChannelDto, UpdateChannelDto } from './dto/channels-dto';
 // import { UpdateServerDto } from './dto/update-server.dto';
 import { DRIZZLE_ORM, PostgresJsDb } from 'src/nest-drizzle';
@@ -12,6 +12,7 @@ import { ServersService } from 'src/servers/servers.service';
 export class ChannelsService {
   constructor(
     @Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb,
+    @Inject(forwardRef(() => ServersService))
     private readonly serversService: ServersService,
   ) {}
 
@@ -20,6 +21,8 @@ export class ChannelsService {
     console.log('~~~creating channel:', name, serverUUID, type, mode);
 
     const chs = await this.serversService.findByUUID(serverUUID);
+
+    console.log('chs', chs);
 
     const result = this.db.transaction(async (tx) => {
       const ins = await tx

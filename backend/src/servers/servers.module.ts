@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ServersService } from './servers.service';
 import { ServersController } from './servers.controller';
-import { UploadService } from 'src/upload/upload.service';
 import { UploadModule } from 'src/upload/upload.module';
+import { ChannelsModule } from 'src/channels/channels.module';
 
 @Module({
-  imports: [UploadModule],
+  imports: [UploadModule, forwardRef(() => ChannelsModule)],
   controllers: [ServersController],
   providers: [ServersService],
   exports: [ServersService],

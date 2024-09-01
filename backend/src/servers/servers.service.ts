@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import {
   CreateServerDto,
   UpdateServerDto,
@@ -11,12 +11,15 @@ import { InferInsertModel, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { PgColumn, PgDate, PgUUID, date } from 'drizzle-orm/pg-core';
 import { isUndefined } from 'src/utils';
 import { UploadService } from 'src/upload/upload.service';
+import { ChannelsService } from 'src/channels/channels.service';
 
 @Injectable()
 export class ServersService {
   constructor(
     @Inject(DRIZZLE_ORM) private readonly db: PostgresJsDb,
     private uploadService: UploadService,
+    @Inject(forwardRef(() => ChannelsService))
+    private readonly channelService: ChannelsService,
   ) {}
 
   async create(file: Express.Multer.File, serverParams: CreateServerDto) {
@@ -35,7 +38,7 @@ export class ServersService {
 
     const { name, serverOwner } = serverParams;
 
-    const result = this.db.transaction(async (tx) => {
+    const createdServer = await this.db.transaction(async (tx) => {
       const ins = await tx
         .insert(servers)
         .values({
@@ -44,6 +47,7 @@ export class ServersService {
           image: uploadUrl,
         })
         .returning({
+          insertedUUID: servers.uuid,
           insertedId: servers.id,
           insertedName: servers.name,
           insertedOwner: servers.serverOwner,
@@ -62,6 +66,7 @@ export class ServersService {
 
       // TODO: Should look for better ways to do this
       return {
+        serverUUID: ins[0].insertedUUID,
         serverName: ins[0].insertedName,
         serverOwner: ins[0].insertedOwner,
         serverImage: ins[0].insertedImageUrl,
@@ -69,7 +74,25 @@ export class ServersService {
         junctionConnected: junc ? true : false,
       };
     });
-    return result;
+
+    // Create default text and voice channels
+    const general = await this.channelService.create({
+      name: 'general',
+      type: 'text',
+      mode: 'public',
+      serverUUID: createdServer.serverUUID,
+    });
+    const voiced = await this.channelService.create({
+      name: 'General',
+      type: 'voice',
+      mode: 'public',
+      serverUUID: createdServer.serverUUID,
+    });
+
+    return {
+      server: createdServer,
+      channels: [general, voiced],
+    };
   }
 
   findAll() {

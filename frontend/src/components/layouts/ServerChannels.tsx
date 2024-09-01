@@ -1,10 +1,4 @@
-import {
-  Outlet,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "@tanstack/react-router";
-import { server } from "../../routes/appRoutes/serverRoutes";
+import { Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import ServerOptionsDropdown from "../discord-ui/ServerOptionsDropdown";
 import {
@@ -24,9 +18,9 @@ import {
 import { Link } from "@tanstack/react-router";
 import IconTooltip from "../discord-ui/IconTooltip";
 import { useQuery } from "@tanstack/react-query";
-import ChatInput from "../discord-ui/ChatInput";
 import { useChannels, useLoading, useModal } from "../../hooks/global-store";
 import { cn } from "../shadcn/utils/utils";
+import { getRouteApi } from "@tanstack/react-router";
 
 const fetchChannels = async (serverUUID: string) => {
   return await fetch(`http://127.0.0.1:3000/api/channels/${serverUUID}`, {
@@ -40,9 +34,7 @@ const fetchChannels = async (serverUUID: string) => {
     .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
 };
 
-import { getRouteApi } from "@tanstack/react-router";
-
-const routeApi = getRouteApi("/app/$serverUUID/$channelUUID");
+const routeApi = getRouteApi("/app");
 // TODO: Separate into diff files server detail, channel detail
 
 const ServerChannels = () => {
