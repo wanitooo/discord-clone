@@ -42,7 +42,7 @@ const ServerChannels = () => {
   console.log("serveruuid", serverUUID);
   console.log("asdhajdhas", channelUUID);
   const { onOpen } = useModal();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const { activeChannel } = useChannels();
 
   const [channels, setChannels] = useState([]);
@@ -82,10 +82,7 @@ const ServerChannels = () => {
             <div>
               {/* TODO: EVENTS Component*/}
               <Collapsible
-                className="w-full flex flex-col
-            text-discord-gray/75
-            dark:text-gray-400 text-sm
-            "
+                className="w-full flex flex-col text-discord-gray/75 dark:text-gray-400 text-sm "
                 open={collapsed}
                 onOpenChange={setCollapsed}
               >

@@ -16,7 +16,7 @@ const Messages = ({ userId, chat }) => {
         />
       </div>
       <div className="flex flex-col">
-        <span className="font-semibold">{userId}</span>
+        <span className="font-semibold">User {userId}</span>
         <span className="font-normal">{chat}</span>
       </div>
     </div>

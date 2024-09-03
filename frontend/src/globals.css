@@ -32,6 +32,12 @@
   src: url("/fonts/gg sans Semibold.ttf");
 }
 
+@font-face {
+  font-family: "ggSans";
+  font-weight: 600;
+  src: url("/fonts/gg sans Bold.ttf");
+}
+
 html,
 body :root {
   height: 100%;

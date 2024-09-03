@@ -60,6 +60,7 @@ const ServerOptionsDropdown = () => {
         bg-white
         text-discord-blackest
         dark:bg-discord-blackest
+        cursor-not-allowed
         "
       >
         <DropdownMenuItem
@@ -68,7 +69,7 @@ const ServerOptionsDropdown = () => {
           flex px-3 py-2 mx-2 rounded-sm
           text-indigo-600 text-xs  
           hover:bg-indigo-500 hover:text-white
-          cursor-pointer
+          cursor-not-allowed
           "
         >
           Invite People
@@ -81,7 +82,7 @@ const ServerOptionsDropdown = () => {
           flex px-3 py-2 mx-2 rounded-sm
           text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
-          cursor-pointer
+          cursor-not-allowed
           "
         >
           Server Settings
@@ -94,7 +95,7 @@ const ServerOptionsDropdown = () => {
           flex px-3 py-2 mx-2 rounded-sm
           text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
-          cursor-pointer
+          cursor-not-allowed
           "
         >
           Create Channel
@@ -107,7 +108,7 @@ const ServerOptionsDropdown = () => {
           flex px-3 py-2 mx-2 rounded-sm
           text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
-          cursor-pointer
+          cursor-not-allowed
           "
         >
           Create Category
@@ -121,7 +122,7 @@ const ServerOptionsDropdown = () => {
           flex px-3 py-2 mx-2 rounded-sm
           text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
-          cursor-pointer
+          cursor-not-allowed
           "
         >
           Notification Settings
@@ -133,7 +134,7 @@ const ServerOptionsDropdown = () => {
           flex px-3 py-2 mx-2 rounded-sm
           text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
-          cursor-pointer
+          cursor-not-allowed
           "
         >
           Privacy Settings
@@ -146,7 +147,7 @@ const ServerOptionsDropdown = () => {
           flex px-3 py-2 mx-2 rounded-sm
           text-discord-gray dark:text-gray-400 text-xs 
           hover:bg-indigo-500 hover:text-white
-          cursor-pointer
+          cursor-not-allowed
           "
         >
           Edit Server Profile
@@ -159,7 +160,7 @@ const ServerOptionsDropdown = () => {
           flex px-3 py-2 mx-2 rounded-sm
           text-red-500 text-xs 
           hover:bg-red-500 hover:text-white
-          cursor-pointer
+          cursor-not-allowed
           "
         >
           {/* If server owner, dont show */}

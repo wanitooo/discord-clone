@@ -159,15 +159,15 @@ const VoicedChannel = ({ channel }) => {
           <div className="flex flex-row w-full h-fit justify-center pb-6 gap-4">
             <VideoCameraIcon
               width={55}
-              className="mx-2 bg-discord-gray p-4 rounded-full cursor-pointer hover:bg-discord-blackest"
+              className="mx-2 bg-discord-gray p-4 rounded-full cursor-not-allowed hover:bg-discord-blackest"
             />
             <ComputerDesktopIcon
               width={55}
-              className="mx-2 bg-discord-gray p-4 rounded-full cursor-pointer hover:bg-discord-blackest"
+              className="mx-2 bg-discord-gray p-4 rounded-full cursor-not-allowed hover:bg-discord-blackest"
             />
             <MicrophoneIcon
               width={55}
-              className="mx-2 bg-discord-gray p-4 rounded-full cursor-pointer hover:bg-discord-blackest"
+              className="mx-2 bg-discord-gray p-4 rounded-full cursor-not-allowed hover:bg-discord-blackest"
             />
             <PhoneXMarkIcon
               width={55}

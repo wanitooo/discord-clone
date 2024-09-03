@@ -63,6 +63,8 @@ const ChatInput = ({ channelName = " " }) => {
                     className="absolute top-1 left-8
                    text-discord-gray
                    dark:text-white
+                   cursor-not-allowed
+                   
                     "
                   />
                   <Input
