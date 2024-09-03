@@ -10,7 +10,7 @@ node_modules/
 
 # Postgres data
 /pgdata
-*.sql
+# *.sql
 
 # bundle
 packages/**/*.d.ts

@@ -80,6 +80,8 @@ body :root {
     --discord-lighter: 220 13% 95%;
     /* --discord-lighter: #F2F3F5; */
 
+    --discord-indigo: #5865f2;
+
     --radius: 0.5rem;
   }
 

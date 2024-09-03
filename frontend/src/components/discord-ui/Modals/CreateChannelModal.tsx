@@ -212,7 +212,7 @@ export const CreateChannelModal = () => {
                     <FormControl>
                       <Input
                         disabled={isLoading}
-                        className="bg-slate-100 dark:bg-discord-black border-0 focus-visible:ring-0 dark:text-slate-300 text-white focus-visible:ring-offset-0 placeholder:text-slate-500/50 dark:placeholder:text-slate-100/50 placeholder:font-normal"
+                        className="bg-slate-100 dark:bg-discord-black border-0 focus-visible:ring-0 dark:text-slate-300 text-black focus-visible:ring-offset-0 placeholder:text-slate-500/50 dark:placeholder:text-slate-100/50 placeholder:font-normal"
                         placeholder="# channel name"
                         {...field}
                         onChange={(e) => {
@@ -246,11 +246,11 @@ export const CreateChannelModal = () => {
               />
             </div>
 
-            <DialogFooter className="bg-gray-100 px-6 py-4 bg-discord-black">
+            <DialogFooter className="bg-gray-100 px-6 py-4 dark:bg-discord-black">
               <Button
                 disabled={isLoading}
                 type="submit"
-                className="bg-[#5865f2] text-white hover:bg-[#5865f2]/75"
+                className="bg-discord-indigo text-white hover:bg-discord-indigo/75"
               >
                 Create
               </Button>

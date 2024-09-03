@@ -136,12 +136,12 @@ export const CreateServerModal = () => {
   };
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
+      <DialogContent className="bg-white  p-0 overflow-hidden dark:bg-discord-gray dark:text-white text-zinc-500 dark:text-slate-300">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
             Customize your server
           </DialogTitle>
-          <DialogDescription className="text-center text-zinc-500">
+          <DialogDescription className="text-center ">
             Give your server a personality with a name and an image. You can
             always change it later.
           </DialogDescription>
@@ -150,11 +150,6 @@ export const CreateServerModal = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-8 px-6 ">
               <div className="flex items-center justify-center text-center">
-                {/* TODO: Figure out how to include this component to the form field */}
-                {/* <UploadAddServerIcon
-                  image={imagePreview}
-                  onImageChange={onImageChange}
-                /> */}
                 <FormField
                   control={form.control}
                   name="image"
@@ -181,13 +176,13 @@ export const CreateServerModal = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="uppercase text-xs font-bold text-zinc-500">
+                    <FormLabel className="uppercase text-xs font-bold ">
                       Server Name:
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
-                        className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                        className="bg-slate-100 dark:bg-discord-black border-0 focus-visible:ring-0 dark:text-slate-300 text-black focus-visible:ring-offset-0 placeholder:text-slate-500/50 dark:placeholder:text-slate-100/50 placeholder:font-normal"
                         placeholder="Enter your server name"
                         {...field}
                         onChange={(e) => {
@@ -202,8 +197,12 @@ export const CreateServerModal = () => {
               />
             </div>
 
-            <DialogFooter className="bg-gray-100 px-6 py-4">
-              <Button disabled={isLoading} type="submit">
+            <DialogFooter className="bg-gray-100 px-6 py-4 dark:bg-discord-black">
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className="bg-discord-indigo text-white hover:bg-discord-indigo/75"
+              >
                 Create
               </Button>
             </DialogFooter>
