@@ -19,6 +19,7 @@ import {
 import { ServersService } from './servers.service';
 import {
   CreateServerDto,
+  SelectServer,
   UpdateServerDto,
   insertServerSchema,
   updateServerSchema,
@@ -65,7 +66,7 @@ export class ServersController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(): Promise<SelectServer[]> {
     const servers = await this.serversService.findAll();
     // console.log('typeof ', typeof servers, 'SERVERS ', servers);
     // return {

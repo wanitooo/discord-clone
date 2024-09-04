@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { LogLevel, Logger, ValidationPipe } from '@nestjs/common';
 import { ZodFilter } from './exceptions/zod.exeception.filter';
@@ -25,6 +26,21 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   app.useGlobalFilters(new ZodFilter());
   app.useGlobalPipes(new ValidationPipe());
+
+  const config = new DocumentBuilder()
+    .setTitle('Cats example')
+    .setDescription('The cats API description')
+    .setVersion('1.0')
+    .addTag('cats')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('swagger', app, document, {
+    jsonDocumentUrl: 'swagger/json',
+  });
+
+  SwaggerModule.setup('api', app, document);
+
   await app.listen(port);
   Logger.log(`Current log levels are: ${process.env.NODE_ENV}`);
   Logger.log(

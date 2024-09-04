@@ -1,15 +1,9 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import {
-  CreateServerDto,
-  UpdateServerDto,
-  insertServerSchema,
-} from './dto/servers-dto';
+import { CreateServerDto, UpdateServerDto } from './dto/servers-dto';
 // import { UpdateServerDto } from './dto/update-server.dto';
 import { DRIZZLE_ORM, PostgresJsDb } from 'src/nest-drizzle';
 import { servers, usersToServers } from 'src/nest-drizzle/discordSchema';
-import { InferInsertModel, asc, desc, eq, isNull, sql } from 'drizzle-orm';
-import { PgColumn, PgDate, PgUUID, date } from 'drizzle-orm/pg-core';
-import { isUndefined } from 'src/utils';
+import { asc, eq } from 'drizzle-orm';
 import { UploadService } from 'src/upload/upload.service';
 import { ChannelsService } from 'src/channels/channels.service';
 
@@ -96,17 +90,7 @@ export class ServersService {
   }
 
   findAll() {
-    const data = this.db
-      .select({
-        serverName: servers.name,
-        serverId: servers.id,
-        serverUUID: servers.uuid,
-        serverImage: servers.image,
-        serverOwner: servers.serverOwner,
-        created: servers.createdAt,
-      })
-      .from(servers)
-      .orderBy(asc(servers.createdAt));
+    const data = this.db.select().from(servers).orderBy(asc(servers.createdAt));
     return data;
   }
 

@@ -28,5 +28,6 @@ export const updateServerSchema = createInsertSchema(servers, {
   updatedAt: z.date().optional(),
 });
 
+export type SelectServer = typeof servers.$inferSelect;
 export type CreateServerDto = z.infer<typeof insertServerSchema>;
 export type UpdateServerDto = z.infer<typeof updateServerSchema>;

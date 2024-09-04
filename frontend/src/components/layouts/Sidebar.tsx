@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLoading } from "../../hooks/global-store";
 
-const fetchServers = async () => {
+import { SelectServers } from "@shared/index";
+
+const fetchServers = async (): Promise<SelectServers[]> => {
   return await fetch("http://127.0.0.1:3000/api/servers", {
     method: "GET",
     mode: "cors",
@@ -16,15 +18,10 @@ const fetchServers = async () => {
   })
     .then((res) => res.json())
     .catch((res) => Promise.reject(new Error(`Failed to fetch data: ${res}`)));
-
-  // const data = axios
-  //   .get("localhost:3000/api/servers")
-  //   .then((res) => console.log(res));
-  // console.log("data ", data);
 };
 
 const Sidebar = () => {
-  const [servers, setServers] = useState([]);
+  const [servers, setServers] = useState<SelectServers[]>([]);
   const serversQuery = useQuery({
     queryKey: ["servers", servers],
     queryFn: async () => {
@@ -34,12 +31,12 @@ const Sidebar = () => {
   const { setServersFetched } = useLoading();
 
   useEffect(() => {
-    if (serversQuery.isFetched) {
+    if (serversQuery.isFetched && serversQuery.data) {
       setServers(serversQuery.data);
       setServersFetched(true);
       // console.log(serversQuery.data);
     }
-  }, [serversQuery.isFetched, serversQuery.data]);
+  }, [serversQuery.isFetched, serversQuery.data, setServersFetched]);
 
   if (serversQuery.isLoading) {
     console.log("Loading data...");
@@ -59,19 +56,20 @@ const Sidebar = () => {
           label="Add a server"
           side="right"
           type="action"
+          name="add server"
         />
         <Separator className="bg-gray-300 dark:bg-discord-gray w-1/2 mx-auto" />
         <ScrollArea className="flex-1 w-full ">
           {servers.map((server) => (
             <Link
-              to={`/app/${server.serverUUID}`}
+              to={`/app/${server.uuid}`}
               params={{ serverId: "0" }}
-              key={server.serverUUID}
+              key={server.uuid}
             >
               <SidebarIcon
-                label={`${server.serverName}`}
-                name={`${server.serverName}`}
-                imageUrl={`${server.serverImage}`}
+                label={`${server.name}`}
+                name={`${server.name}`}
+                imageUrl={`${server.image}`}
               />
             </Link>
           ))}
