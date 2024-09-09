@@ -21,8 +21,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useChannels, useLoading, useModal } from "../../hooks/global-store";
 import { cn } from "../shadcn/utils/utils";
 import { getRouteApi } from "@tanstack/react-router";
+import { SelectChannels } from "@shared/index";
 
-const fetchChannels = async (serverUUID: string) => {
+const fetchChannels = async (serverUUID: string): Promise<SelectChannels[]> => {
   return await fetch(`http://127.0.0.1:3000/api/channels/${serverUUID}`, {
     method: "GET",
     mode: "cors",
@@ -45,7 +46,7 @@ const ServerChannels = () => {
   const [collapsed, setCollapsed] = useState(true);
   const { activeChannel } = useChannels();
 
-  const [channels, setChannels] = useState([]);
+  const [channels, setChannels] = useState<SelectChannels[]>([]);
   const channelsQuery = useQuery({
     queryKey: ["serverUUID", serverUUID],
     queryFn: async () => {
@@ -58,12 +59,12 @@ const ServerChannels = () => {
   // Conditionally perform actions based on channelsQuery.isFetched
   const { setChannelsFetched } = useLoading();
   useEffect(() => {
-    if (channelsQuery.isFetched) {
+    if (channelsQuery.isFetched && channelsQuery.data) {
       setChannels(channelsQuery.data);
       setChannelsFetched(true);
       // console.log(channelsQuery.data);
     }
-  }, [channelsQuery.isFetched, channelsQuery.data]);
+  }, [channelsQuery.isFetched, channelsQuery.data, setChannelsFetched]);
   if (channelsQuery.isLoading) {
     console.log("Loading data...");
     return <h1 className="text-black">LOADING...</h1>;
@@ -110,27 +111,25 @@ const ServerChannels = () => {
                 {channels.map((channel, idx) => (
                   <CollapsibleContent key={idx} className="">
                     <Link
-                      to={`/app/${serverUUID}/${channel.channelUUID}`}
+                      to={`/app/${serverUUID}/${channel.uuid}`}
                       // params={{ serverId: "0" }}
                     >
                       <div
                         className={cn(
                           "w-11/12 flex items-center justify-between px-2 py-1 ml-1 ",
                           "hover:bg-discord-light hover:text-discord-blackest dark:hover:text-white dark:hover:bg-discord-gray hover:rounded-sm text-base font-medium font-ggSans",
-                          activeChannel.channelUUID === channel.channelUUID
+                          activeChannel?.uuid === channel.uuid
                             ? "bg-discord-light dark:bg-discord-gray text-discord-blackest dark:text-white rounded-sm"
                             : ""
                         )}
                       >
                         <div className="flex items-center justify-center ">
-                          {channel.channelType == "text" ? (
+                          {channel.type == "text" ? (
                             <HashtagIcon width={15} className="mr-2" />
                           ) : (
                             <SpeakerWaveIcon width={15} className="mr-2" />
                           )}
-                          <span className="lowercase">
-                            {channel.channelName}
-                          </span>
+                          <span className="lowercase">{channel.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <IconTooltip

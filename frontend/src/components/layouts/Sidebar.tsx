@@ -57,13 +57,14 @@ const Sidebar = () => {
           side="right"
           type="action"
           name="add server"
+          imageUrl={null}
         />
         <Separator className="bg-gray-300 dark:bg-discord-gray w-1/2 mx-auto" />
         <ScrollArea className="flex-1 w-full ">
           {servers.map((server) => (
             <Link
               to={`/app/${server.uuid}`}
-              params={{ serverId: "0" }}
+              // params={{ serverId: "0" }}
               key={server.uuid}
             >
               <SidebarIcon

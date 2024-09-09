@@ -68,33 +68,14 @@ export class ChannelsService {
   }
 
   findAllChannels() {
-    return this.db
-      .select({
-        channelName: channels.name,
-        channelId: channels.id,
-        channelUUID: channels.uuid,
-        channelServerId: channels.serverId,
-        channelType: channels.type,
-        createdAt: channels.createdAt,
-        updatedAt: channels.updatedAt,
-      })
-      .from(channels)
-      .orderBy(asc(channels.createdAt));
+    return this.db.select().from(channels).orderBy(asc(channels.createdAt));
   }
 
   async findAllChannelsInServer(uuid: string) {
     const chs = await this.serversService.findByUUID(uuid);
     // console.log('chs ', chs[0]);
     return this.db
-      .select({
-        channelName: channels.name,
-        channelId: channels.id,
-        channelUUID: channels.uuid,
-        channelServerId: channels.serverId,
-        channelType: channels.type,
-        createdAt: channels.createdAt,
-        updatedAt: channels.updatedAt,
-      })
+      .select()
       .from(channels)
       .orderBy(asc(channels.createdAt))
       .where(eq(channels.serverId, chs[0].id));
@@ -103,17 +84,10 @@ export class ChannelsService {
   async findAChannelInServer(serverUUID: string, channelUUID: string) {
     // console.log('REV IN CHANNELS SERVICE', serverUUID, channelUUID);
     const chs = await this.serversService.findByUUID(serverUUID);
+    // console.log('```````````CHS: ', chs);
     const serverId = chs[0].id;
     const [channel] = await this.db
-      .select({
-        channelName: channels.name,
-        channelId: channels.id,
-        channelUUID: channels.uuid,
-        channelServerId: channels.serverId,
-        channelType: channels.type,
-        createdAt: channels.createdAt,
-        updatedAt: channels.updatedAt,
-      })
+      .select()
       .from(channels)
       .orderBy(asc(channels.createdAt))
       .where(

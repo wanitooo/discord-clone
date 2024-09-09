@@ -1,20 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, ScrollArea } from "../shadcn/ui";
-import { Peer } from "peerjs";
 import { PeerStream, useChannels, usePeers } from "../../hooks/global-store";
 import socket from "../../socket";
-import { useParams } from "@tanstack/react-router";
+import { getRouteApi, useParams } from "@tanstack/react-router";
 import VideoPlayer from "./VideoPlayer";
 import { cn } from "../shadcn/utils/utils";
 import {
   SpeakerWaveIcon,
-  HashtagIcon,
   MicrophoneIcon,
   PhoneXMarkIcon,
   ComputerDesktopIcon,
   VideoCameraIcon,
 } from "@heroicons/react/24/solid";
 
+const routeApi = getRouteApi("/app/$serverUUID/$channelUUID");
 // TODO: Fix client disconnect created on text channels
 const VoicedChannel = ({ channel }) => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
@@ -23,6 +22,7 @@ const VoicedChannel = ({ channel }) => {
   const [joined, setJoined] = useState(false);
   const { activeChannel } = useChannels();
 
+  const { serverUUID, channelUUID } = routeApi.useParams();
   const {
     peerInstance,
     peerStreams,
@@ -30,9 +30,6 @@ const VoicedChannel = ({ channel }) => {
     removePeerStream,
     clearPeerStreams,
   } = usePeers();
-  const { channelUUID, serverUUID } = useParams({
-    from: "/app",
-  });
   // Create Peer id upon joing the channel
   useEffect(() => {
     // if (!peer) return;
@@ -150,7 +147,7 @@ const VoicedChannel = ({ channel }) => {
         <div className="-translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 font-ggSans font-normal text-base scale-y-[85%] group-hover:scale-y-100 px-6 duration-300 transition-all">
           <div className="flex flex-row gap-2">
             <SpeakerWaveIcon width={20} className="mr-2" />
-            <span className="lowercase">{channel.channelName}</span>
+            <span className="lowercase">{channel.name}</span>
             <span className="text-green-400">{peerInstance?.id}</span>
           </div>
         </div>

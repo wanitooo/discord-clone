@@ -7,7 +7,7 @@ import { createPresignedUrlWithClient } from "../../../s3";
 interface SidebarProps extends SidebarTooltipProps {
   type?: "server" | "action";
   name: string;
-  imageUrl: string;
+  imageUrl: string | null;
 }
 
 // This component can either be action icon (e.g add a server) or actual servers icon

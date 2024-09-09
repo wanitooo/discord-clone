@@ -21,7 +21,7 @@ export class ChatsService {
 
     const channelId = await this.channelsService
       .findAChannelInServer(serverUUID, channelUUID)
-      .then((channel) => channel.channelId)
+      .then((channel) => channel.id)
       .catch((err) => console.log(err));
 
     // console.log(channelId);
@@ -52,7 +52,7 @@ export class ChatsService {
 
     const channelId = await this.channelsService
       .findAChannelInServer(serverUUID, channelUUID)
-      .then((channel) => channel.channelId)
+      .then((channel) => channel.id)
       .catch((err) => console.log(err));
     if (channelId) {
       var result = await this.db.transaction(async (tx) => {

@@ -111,14 +111,7 @@ export class ServersService {
 
   findByUUID(uuid: string) {
     return this.db
-      .select({
-        name: servers.name,
-        id: servers.id,
-        uuid: servers.uuid,
-        image: servers.image,
-        serverOwner: servers.serverOwner,
-        createdAt: servers.createdAt,
-      })
+      .select()
       .from(servers)
       .where(eq(servers.uuid, uuid))
       .orderBy(asc(servers.createdAt));

@@ -25,6 +25,7 @@ import UploadAddServerIcon from "../UploadAddServerIcon";
 // import { FileUpload } from "@/components/file-upload";
 import { useModal } from "../../../hooks/global-store";
 import { useState } from "react";
+import { useLocation, useRouter } from "@tanstack/react-router";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -76,7 +77,10 @@ export const CreateServerModal = () => {
 
   // Must be taken from the current authenticated user.
   // @ts-expect-error: cookies not setup yet
-  const [serverOwner, setServerOwner] = useState<string>("");
+  // const [serverOwner, setServerOwner] = useState<string>("");
+  const [serverOwner] = useState<string>("");
+  const router = useRouter();
+  const { pathname } = useLocation();
 
   const uploadQuery = useQuery({
     queryKey: ["uploadServerImage", imageFile],
@@ -123,8 +127,8 @@ export const CreateServerModal = () => {
       // console.log("triggered submit");
       setImagePreview(undefined);
       await uploadQuery.refetch();
+      router.navigate({ to: pathname });
       handleClose();
-      router.refresh();
     } catch (error) {
       console.log(error); // TODO: actually handle this error
     }

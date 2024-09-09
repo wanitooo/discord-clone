@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import socket from "../../socket";
 import ChatInput from "./ChatInput";
-import { useParams } from "@tanstack/react-router";
+import { getRouteApi, useParams } from "@tanstack/react-router";
 import { useChannels, usePeers } from "../../hooks/global-store";
 import Messages from "./Messages";
 import { ArchiveIcon } from "@radix-ui/react-icons";
@@ -23,11 +23,12 @@ interface Chat {
   channelId: number;
 }
 
+const routeApi = getRouteApi("/app/$serverUUID/$channelUUID");
 const ChatBox = ({ channel }) => {
   const [chats, setChats] = useState<Chat[] | undefined>();
   const { activeChannel } = useChannels();
-  let { channelUUID, serverUUID }: { channelUUID: string; serverUUID: string } =
-    useParams({ from: "/app" });
+
+  const { serverUUID, channelUUID } = routeApi.useParams();
   const { peerStreams } = usePeers();
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -75,7 +76,7 @@ const ChatBox = ({ channel }) => {
       >
         <div className="inline-flex justify-between gap-2 items-center">
           <HashtagIcon height={25} width={25} className="text-center h-full" />
-          <span className="font-semibold">{activeChannel.channelName}</span>
+          <span className="font-semibold">{activeChannel?.name}</span>
         </div>
         <div className="inline-flex justify-between gap-4">
           <ArchiveIcon
@@ -112,10 +113,10 @@ const ChatBox = ({ channel }) => {
             </div>
             <div className="flex flex-col gap-1 my-6">
               <span className="text-3xl font-ggSans font-bold">
-                Welcome to the #{activeChannel.channelName}!
+                Welcome to the #{activeChannel?.name}!
               </span>
               <span className="text-md font-ggSans font-normal text-slate-300/30">
-                This is the start of #{activeChannel.channelName} channel.
+                This is the start of #{activeChannel?.name} channel.
               </span>
             </div>
             <Separator className="dark:bg-gray-200/10 h-[2.5px] rounded-full" />
@@ -124,7 +125,7 @@ const ChatBox = ({ channel }) => {
         </div>
         {/* <VoicedChannels /> */}
       </div>
-      <ChatInput channelName={activeChannel.channelName} />
+      <ChatInput channelName={activeChannel?.name} />
     </>
   );
 };

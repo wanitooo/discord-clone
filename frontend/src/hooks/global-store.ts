@@ -2,6 +2,7 @@ import Peer from "peerjs";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { peer as frontendPeer } from "../socket";
+import { SelectChannels } from "@shared/index";
 export type ModalType = "createServer" | "createChannel" | "loading";
 
 interface ModalStore {
@@ -83,15 +84,16 @@ export const usePeers = create<PeerStore>()((set) => ({
 export interface ChannelStore {
   activeChannelType: string;
   setActiveChannelType: (type: string) => void;
-  activeChannel: string;
-  setActiveChannel: (type: string) => void;
+  activeChannel: SelectChannels | null;
+  setActiveChannel: (channel: SelectChannels) => void;
 }
 
 export const useChannels = create<ChannelStore>((set) => ({
   activeChannelType: "text",
   setActiveChannelType: (type) => set(() => ({ activeChannelType: type })),
-  activeChannel: "text",
-  setActiveChannel: (channelId) => set(() => ({ activeChannel: channelId })),
+  activeChannel: null,
+  setActiveChannel: (channel: SelectChannels) =>
+    set(() => ({ activeChannel: channel })),
 }));
 
 export interface LoadingStore {

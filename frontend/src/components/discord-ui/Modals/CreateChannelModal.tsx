@@ -25,7 +25,7 @@ import {
 
 import { useModal } from "../../../hooks/global-store";
 import { RadioGroup, RadioGroupItem } from "../../shadcn/ui/RadioGroup";
-import { useParams } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { HashtagIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
 
 const formSchema = z.object({
@@ -69,11 +69,10 @@ const createChannel = async (
 };
 
 // TODO: Toast for succesful channel creation
-// Add icons to channel type radio buttons
-// Add icons in general
-// Polish alignments
+// Fix get route API, instead of global it should only be active whenever the route is in /app/$serverUUID
+const routeApi = getRouteApi();
 export const CreateChannelModal = () => {
-  const { serverUUID } = useParams({});
+  const { serverUUID } = routeApi.useParams();
   // console.log("serverid", serverId);
   const createChannelQuery = useQuery({
     queryKey: ["createChannelQuery", serverUUID],

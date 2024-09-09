@@ -10,7 +10,7 @@ export const s3Client = new S3Client({
   },
 });
 
-export const createPresignedUrlWithClient = async (dbUri: string) => {
+export const createPresignedUrlWithClient = async (dbUri: string | null) => {
   const uri =
     dbUri ||
     `https://wanitooo-discord-clone.s3.ap-southeast-1.amazonaws.com/aws-test-img.png`;
