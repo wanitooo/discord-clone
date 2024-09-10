@@ -7,11 +7,14 @@ import { ServersModule } from './servers/servers.module';
 import { ChannelsModule } from './channels/channels.module';
 import { ChatsModule } from './chats/chats.module';
 import { UploadModule } from './upload/upload.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       // load: []
+      envFilePath: '.env',
     }),
     // GlobalModule,
     NestDrizzleClientModule,
@@ -19,6 +22,8 @@ import { UploadModule } from './upload/upload.module';
     ChannelsModule,
     ChatsModule,
     UploadModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

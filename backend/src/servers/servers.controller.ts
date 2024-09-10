@@ -15,6 +15,7 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  UseGuards,
 } from '@nestjs/common';
 import { ServersService } from './servers.service';
 import {
@@ -32,6 +33,7 @@ import {
 } from 'src/pipes/zod-pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileURLToPath } from 'url';
+import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
 
 @Controller('servers')
 export class ServersController {
@@ -65,6 +67,7 @@ export class ServersController {
     return this.serversService.create(file, serverParams);
   }
 
+  @UseGuards(JwtAuthGuard) // test
   @Get()
   async findAll(): Promise<SelectServer[]> {
     const servers = await this.serversService.findAll();
