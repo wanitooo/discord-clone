@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { users } from 'src/nest-drizzle/discordSchema';
 import { UsersService } from 'src/users/users.service';
-
+import { compare } from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(
@@ -15,7 +15,9 @@ export class AuthService {
       await this.usersService.findOne(email);
 
     // should bcrypt.compare(password, hash)
-    if (user && user.password == password) {
+    const matched = await compare(password, user.password);
+
+    if (user && matched) {
       const { password, ...others } = user;
       return others;
     }

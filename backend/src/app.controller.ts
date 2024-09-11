@@ -16,21 +16,10 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-  @Get('/create-user')
-  createUser() {
-    return this.appService.createUser();
-  }
 
   @Get('/migrate')
   migrateDb() {
     return this.appService.migrate();
-  }
-
-  @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
-  async login(@Request() req) {
-    // auth guard validates the user first from the request then .login via passport-local generates an access token from passport-jwt
-    return this.authService.login(req.user);
   }
 
   @UseGuards(JwtAuthGuard)

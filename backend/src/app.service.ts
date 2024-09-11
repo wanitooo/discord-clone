@@ -19,22 +19,6 @@ export class AppService {
     return 'Hello World!';
   }
 
-  createUser() {
-    return this.db
-      .insert(users)
-      .values({
-        name: 'juan',
-        password: 'randompoasswesd',
-        email: 'juian@email.com',
-        role: 'admin',
-      })
-      .returning({
-        insertedId: users.id,
-        insertedName: users.name,
-        insertedEmail: users.email,
-      });
-  }
-
   migrate() {
     return this.drizzleService.migrate();
   }

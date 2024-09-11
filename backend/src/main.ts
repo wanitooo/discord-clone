@@ -3,6 +3,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { LogLevel, Logger, ValidationPipe } from '@nestjs/common';
 import { ZodFilter } from './exceptions/zod.exeception.filter';
+import cookieParser from 'cookie-parser';
+import { jwtConstants } from './auth/constants';
 async function bootstrap() {
   const prodLogLevels: LogLevel[] = ['log', 'error', 'warn'];
   const devLogLevels: LogLevel[] = ['log', 'error', 'warn', 'debug', 'verbose'];
@@ -26,6 +28,19 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   app.useGlobalFilters(new ZodFilter());
   app.useGlobalPipes(new ValidationPipe());
+
+  const cookieOpts = {
+    httpOnly: true,
+    secure: false, // __prod__
+    sameSite: 'lax',
+    path: '/',
+    domain: '', // __prod__ ? `.${process.env.DOMAIN}` : ""
+    maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 year
+  };
+
+  // app.use(cookieParser(
+  //   jwtConstants.secret, cookieOpts
+  // ));
 
   const config = new DocumentBuilder()
     .setTitle('Cats example')
