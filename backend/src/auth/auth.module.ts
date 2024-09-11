@@ -8,6 +8,7 @@ import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 
+//TODO: separate into folders auth/guards, auth/startegies
 @Module({
   imports: [
     UsersModule,

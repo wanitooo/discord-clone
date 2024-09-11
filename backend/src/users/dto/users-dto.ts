@@ -1,3 +1,4 @@
+import { InferModelFromColumns, InferSelectModel } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 import { users } from 'src/nest-drizzle/discordSchema';
 import { z } from 'zod';
@@ -18,3 +19,4 @@ export const insertUserSchema = createInsertSchema(users, {
 });
 
 export type CreateUserDto = z.infer<typeof insertUserSchema>;
+export type User = InferSelectModel<typeof users>;

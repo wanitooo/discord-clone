@@ -34,6 +34,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileURLToPath } from 'url';
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
+import { CurrentUser } from 'src/auth/current-user.decorator';
 
 @Controller('servers')
 export class ServersController {
@@ -69,13 +70,14 @@ export class ServersController {
 
   @UseGuards(JwtAuthGuard) // test
   @Get()
-  async findAll(): Promise<SelectServer[]> {
+  async findAll(@CurrentUser() user): Promise<SelectServer[]> {
     const servers = await this.serversService.findAll();
     // console.log('typeof ', typeof servers, 'SERVERS ', servers);
     // return {
     //   message: 'Found servers!',
     //   serversFound: servers,
     // };
+    console.log(user);
     return servers;
   }
 
