@@ -18,5 +18,8 @@ export const insertUserSchema = createInsertSchema(users, {
   email: true,
 });
 
+export const updateUserSchema = createInsertSchema(users);
+
 export type CreateUserDto = z.infer<typeof insertUserSchema>;
+export type UpdateUserDto = z.infer<typeof updateUserSchema>;
 export type User = InferSelectModel<typeof users>;

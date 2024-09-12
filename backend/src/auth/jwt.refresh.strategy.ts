@@ -3,27 +3,31 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { jwtConstants } from './constants';
 import { Request } from 'express';
-import { UsersService } from 'src/users/users.service';
+import { AuthService } from './auth.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly usersService: UsersService) {
+export class JwtRefreshStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-refresh',
+) {
+  constructor(private readonly authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         ExtractJwt.fromAuthHeaderAsBearerToken(),
-        (request: Request) => request.cookies?.Authentication,
+        (request: Request) => request.cookies?.Refresh,
       ]),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secret,
+      secretOrKey: jwtConstants.refreshSecret,
+      passReqToCallback: true,
     });
   }
 
-  async validate(payload: any) {
+  async validate(request: Request, payload: any) {
     // return { userUUID: payload.sub, email: payload.email };
     // JWT puts this info in the signed token
-    // console.log('validating via jwt strategy');
-    const { password, ...user } = await this.usersService.findOne(
+    const user = await this.authService.verifyRefreshToken(
       payload.email,
+      request.cookies?.Refresh,
     );
     return user;
   }

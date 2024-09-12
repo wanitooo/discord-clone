@@ -1,6 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Patch, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, insertUserSchema } from './dto/users-dto';
+import {
+  CreateUserDto,
+  insertUserSchema,
+  UpdateUserDto,
+  updateUserSchema,
+} from './dto/users-dto';
 import { ZodPipe } from 'src/pipes/zod-pipe';
 
 @Controller('users')
@@ -14,5 +19,10 @@ export class UsersController {
       payload.password,
       payload.email,
     );
+  }
+
+  @Patch(':email')
+  updateUser(@Param('email') email: string, @Body() payload: UpdateUserDto) {
+    return this.usersService.updateUser(email, payload);
   }
 }

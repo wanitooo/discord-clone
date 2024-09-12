@@ -24,14 +24,9 @@ export const users = pgTable("users", {
   role: text("role").$type<"admin" | "user">(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  refreshToken: varchar("refresh_token").default(""),
+  refreshTokenVersion: integer("refresh_token_version").default(0),
 });
-
-// export const Tokens = pgTable('refreshTokens', {
-//   id: serial('id').primaryKey().unique().primaryKey(),
-//   userId: uuid('user_uuid').defaultRandom(),
-//   refreshToken: varchar('name', { length: 256 }).notNull(),
-//   version: text('email').unique(),
-// });
 
 // TODO: Migrate default db image change
 export const servers = pgTable("servers", {

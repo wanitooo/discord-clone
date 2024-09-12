@@ -35,6 +35,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { fileURLToPath } from 'url';
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
+import { JwtRefreshAuthGuard } from 'src/auth/jwt.refresh.auth.guard';
 
 @Controller('servers')
 export class ServersController {
@@ -77,7 +78,7 @@ export class ServersController {
     //   message: 'Found servers!',
     //   serversFound: servers,
     // };
-    console.log(user);
+    console.log('IN SERVERS FINDALL', user);
     return servers;
   }
 

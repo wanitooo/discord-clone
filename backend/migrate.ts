@@ -14,4 +14,10 @@ const main = async () => {
   console.log('Done migrating.');
 };
 
-main();
+try {
+  main();
+  process.exitCode = 0;
+} catch (error) {
+  console.log(error);
+  process.exitCode = 1;
+}

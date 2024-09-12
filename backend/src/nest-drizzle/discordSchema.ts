@@ -24,6 +24,8 @@ export const users = pgTable('users', {
   role: text('role').$type<'admin' | 'user'>(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
+  refreshToken: varchar('refresh_token').default(''),
+  refreshTokenVersion: integer('refresh_token_version').default(0),
 });
 
 // TODO: Migrate default db image change
